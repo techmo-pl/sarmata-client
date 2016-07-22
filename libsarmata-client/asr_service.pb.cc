@@ -59,7 +59,6 @@ const ::google::protobuf::EnumDescriptor* ResponseStatus_descriptor_ = NULL;
 }  // namespace
 
 
-void protobuf_AssignDesc_asr_5fservice_2eproto() GOOGLE_ATTRIBUTE_COLD;
 void protobuf_AssignDesc_asr_5fservice_2eproto() {
   protobuf_AddDesc_asr_5fservice_2eproto();
   const ::google::protobuf::FileDescriptor* file =
@@ -263,7 +262,6 @@ inline void protobuf_AssignDescriptorsOnce() {
                  &protobuf_AssignDesc_asr_5fservice_2eproto);
 }
 
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -317,7 +315,6 @@ void protobuf_ShutdownFile_asr_5fservice_2eproto() {
   delete Phrase_Word_reflection_;
 }
 
-void protobuf_AddDesc_asr_5fservice_2eproto() GOOGLE_ATTRIBUTE_COLD;
 void protobuf_AddDesc_asr_5fservice_2eproto() {
   static bool already_here = false;
   if (already_here) return;
@@ -419,6 +416,16 @@ bool ResponseStatus_IsValid(int value) {
       return false;
   }
 }
+
+
+namespace {
+
+static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD;
+static void MergeFromFail(int line) {
+  GOOGLE_CHECK(false) << __FILE__ << ":" << line;
+}
+
+}  // namespace
 
 
 // ===================================================================
@@ -574,21 +581,21 @@ void RecognizeRequest::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.RecognizeRequest)
 }
 
-::google::protobuf::uint8* RecognizeRequest::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* RecognizeRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.RecognizeRequest)
   // optional .sarmata.InitialRecognizeRequest initial_request = 1;
   if (this->has_initial_request()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, *this->initial_request_, false, target);
+      WriteMessageNoVirtualToArray(
+        1, *this->initial_request_, target);
   }
 
   // optional .sarmata.AudioRequest audio_request = 2;
   if (this->has_audio_request()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        2, *this->audio_request_, false, target);
+      WriteMessageNoVirtualToArray(
+        2, *this->audio_request_, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:sarmata.RecognizeRequest)
@@ -621,9 +628,7 @@ int RecognizeRequest::ByteSize() const {
 
 void RecognizeRequest::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.RecognizeRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const RecognizeRequest* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const RecognizeRequest>(
           &from);
@@ -638,9 +643,7 @@ void RecognizeRequest::MergeFrom(const ::google::protobuf::Message& from) {
 
 void RecognizeRequest::MergeFrom(const RecognizeRequest& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.RecognizeRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.has_initial_request()) {
     mutable_initial_request()->::sarmata::InitialRecognizeRequest::MergeFrom(from.initial_request());
   }
@@ -934,8 +937,8 @@ void ConfigField::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.ConfigField)
 }
 
-::google::protobuf::uint8* ConfigField::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* ConfigField::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.ConfigField)
   // optional string key = 1;
   if (this->key().size() > 0) {
@@ -989,9 +992,7 @@ int ConfigField::ByteSize() const {
 
 void ConfigField::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.ConfigField)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const ConfigField* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const ConfigField>(
           &from);
@@ -1006,9 +1007,7 @@ void ConfigField::MergeFrom(const ::google::protobuf::Message& from) {
 
 void ConfigField::MergeFrom(const ConfigField& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.ConfigField)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.key().size() > 0) {
 
     key_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.key_);
@@ -1310,14 +1309,14 @@ void InitialRecognizeRequest::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.InitialRecognizeRequest)
 }
 
-::google::protobuf::uint8* InitialRecognizeRequest::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* InitialRecognizeRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.InitialRecognizeRequest)
   // repeated .sarmata.ConfigField config = 1;
   for (unsigned int i = 0, n = this->config_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, this->config(i), false, target);
+      WriteMessageNoVirtualToArray(
+        1, this->config(i), target);
   }
 
   // optional string token = 2;
@@ -1362,9 +1361,7 @@ int InitialRecognizeRequest::ByteSize() const {
 
 void InitialRecognizeRequest::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.InitialRecognizeRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const InitialRecognizeRequest* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const InitialRecognizeRequest>(
           &from);
@@ -1379,9 +1376,7 @@ void InitialRecognizeRequest::MergeFrom(const ::google::protobuf::Message& from)
 
 void InitialRecognizeRequest::MergeFrom(const InitialRecognizeRequest& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.InitialRecognizeRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   config_.MergeFrom(from.config_);
   if (from.token().size() > 0) {
 
@@ -1656,8 +1651,8 @@ void AudioRequest::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.AudioRequest)
 }
 
-::google::protobuf::uint8* AudioRequest::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* AudioRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.AudioRequest)
   // optional bytes content = 1;
   if (this->content().size() > 0) {
@@ -1699,9 +1694,7 @@ int AudioRequest::ByteSize() const {
 
 void AudioRequest::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.AudioRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const AudioRequest* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const AudioRequest>(
           &from);
@@ -1716,9 +1709,7 @@ void AudioRequest::MergeFrom(const ::google::protobuf::Message& from) {
 
 void AudioRequest::MergeFrom(const AudioRequest& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.AudioRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.content().size() > 0) {
 
     content_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.content_);
@@ -2026,8 +2017,8 @@ void InterpretRequest::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.InterpretRequest)
 }
 
-::google::protobuf::uint8* InterpretRequest::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* InterpretRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.InterpretRequest)
   // optional string token = 1;
   if (this->token().size() > 0) {
@@ -2099,9 +2090,7 @@ int InterpretRequest::ByteSize() const {
 
 void InterpretRequest::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.InterpretRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const InterpretRequest* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const InterpretRequest>(
           &from);
@@ -2116,9 +2105,7 @@ void InterpretRequest::MergeFrom(const ::google::protobuf::Message& from) {
 
 void InterpretRequest::MergeFrom(const InterpretRequest& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.InterpretRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.token().size() > 0) {
 
     token_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.token_);
@@ -2475,8 +2462,8 @@ void InterpretResponse::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.InterpretResponse)
 }
 
-::google::protobuf::uint8* InterpretResponse::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* InterpretResponse::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.InterpretResponse)
   // optional string error = 1;
   if (this->error().size() > 0) {
@@ -2529,9 +2516,7 @@ int InterpretResponse::ByteSize() const {
 
 void InterpretResponse::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.InterpretResponse)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const InterpretResponse* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const InterpretResponse>(
           &from);
@@ -2546,9 +2531,7 @@ void InterpretResponse::MergeFrom(const ::google::protobuf::Message& from) {
 
 void InterpretResponse::MergeFrom(const InterpretResponse& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.InterpretResponse)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   si_.MergeFrom(from.si_);
   if (from.error().size() > 0) {
 
@@ -2895,8 +2878,8 @@ void DefineGrammarRequest::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.DefineGrammarRequest)
 }
 
-::google::protobuf::uint8* DefineGrammarRequest::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* DefineGrammarRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.DefineGrammarRequest)
   // optional string token = 1;
   if (this->token().size() > 0) {
@@ -2968,9 +2951,7 @@ int DefineGrammarRequest::ByteSize() const {
 
 void DefineGrammarRequest::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.DefineGrammarRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const DefineGrammarRequest* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const DefineGrammarRequest>(
           &from);
@@ -2985,9 +2966,7 @@ void DefineGrammarRequest::MergeFrom(const ::google::protobuf::Message& from) {
 
 void DefineGrammarRequest::MergeFrom(const DefineGrammarRequest& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.DefineGrammarRequest)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.token().size() > 0) {
 
     token_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.token_);
@@ -3344,8 +3323,8 @@ void DefineGrammarRespone::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.DefineGrammarRespone)
 }
 
-::google::protobuf::uint8* DefineGrammarRespone::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* DefineGrammarRespone::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.DefineGrammarRespone)
   // optional string error = 1;
   if (this->error().size() > 0) {
@@ -3399,9 +3378,7 @@ int DefineGrammarRespone::ByteSize() const {
 
 void DefineGrammarRespone::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.DefineGrammarRespone)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const DefineGrammarRespone* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const DefineGrammarRespone>(
           &from);
@@ -3416,9 +3393,7 @@ void DefineGrammarRespone::MergeFrom(const ::google::protobuf::Message& from) {
 
 void DefineGrammarRespone::MergeFrom(const DefineGrammarRespone& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.DefineGrammarRespone)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.error().size() > 0) {
 
     error_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.error_);
@@ -3818,8 +3793,8 @@ void RecognizeResponse::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.RecognizeResponse)
 }
 
-::google::protobuf::uint8* RecognizeResponse::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* RecognizeResponse::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.RecognizeResponse)
   // optional .sarmata.ResponseStatus status = 1;
   if (this->status() != 0) {
@@ -3857,8 +3832,8 @@ void RecognizeResponse::SerializeWithCachedSizes(
   // repeated .sarmata.Phrase results = 5;
   for (unsigned int i = 0, n = this->results_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        5, this->results(i), false, target);
+      WriteMessageNoVirtualToArray(
+        5, this->results(i), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:sarmata.RecognizeResponse)
@@ -3912,9 +3887,7 @@ int RecognizeResponse::ByteSize() const {
 
 void RecognizeResponse::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.RecognizeResponse)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const RecognizeResponse* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const RecognizeResponse>(
           &from);
@@ -3929,9 +3902,7 @@ void RecognizeResponse::MergeFrom(const ::google::protobuf::Message& from) {
 
 void RecognizeResponse::MergeFrom(const RecognizeResponse& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.RecognizeResponse)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   results_.MergeFrom(from.results_);
   if (from.status() != 0) {
     set_status(from.status());
@@ -4385,8 +4356,8 @@ void Phrase_Word::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.Phrase.Word)
 }
 
-::google::protobuf::uint8* Phrase_Word::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* Phrase_Word::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.Phrase.Word)
   // optional string transcript = 1;
   if (this->transcript().size() > 0) {
@@ -4466,9 +4437,7 @@ int Phrase_Word::ByteSize() const {
 
 void Phrase_Word::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.Phrase.Word)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const Phrase_Word* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const Phrase_Word>(
           &from);
@@ -4483,9 +4452,7 @@ void Phrase_Word::MergeFrom(const ::google::protobuf::Message& from) {
 
 void Phrase_Word::MergeFrom(const Phrase_Word& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.Phrase.Word)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   if (from.transcript().size() > 0) {
 
     transcript_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.transcript_);
@@ -4752,14 +4719,14 @@ void Phrase::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:sarmata.Phrase)
 }
 
-::google::protobuf::uint8* Phrase::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* Phrase::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:sarmata.Phrase)
   // repeated .sarmata.Phrase.Word words = 1;
   for (unsigned int i = 0, n = this->words_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, this->words(i), false, target);
+      WriteMessageNoVirtualToArray(
+        1, this->words(i), target);
   }
 
   // optional double confidence = 2;
@@ -4824,9 +4791,7 @@ int Phrase::ByteSize() const {
 
 void Phrase::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:sarmata.Phrase)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   const Phrase* source = 
       ::google::protobuf::internal::DynamicCastToGenerated<const Phrase>(
           &from);
@@ -4841,9 +4806,7 @@ void Phrase::MergeFrom(const ::google::protobuf::Message& from) {
 
 void Phrase::MergeFrom(const Phrase& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:sarmata.Phrase)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
   words_.MergeFrom(from.words_);
   if (from.confidence() != 0) {
     set_confidence(from.confidence());
