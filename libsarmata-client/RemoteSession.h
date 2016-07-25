@@ -7,7 +7,7 @@ namespace sarmata
 {
     class RemoteSession: public IASRSession
     {
-        RemoteSession(const std::string & token, const ASRSettings & settings);
+        RemoteSession(const std::string & host, std::string & token, const ASRSettings & settings);
         virtual void AddSamples(const std::vector<short> & data) override;
 
         virtual void EndOfStream() override;
