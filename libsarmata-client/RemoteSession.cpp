@@ -3,7 +3,7 @@
 namespace sarmata
 {
 
-RemoteSession::RemoteSession(const std::string & host, std::string & token, const ASRSettings & settings)
+RemoteSession::RemoteSession(const std::string & host, const std::string & token, const ASRSettings & settings)
 {
     //as
 }

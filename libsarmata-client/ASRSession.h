@@ -7,7 +7,7 @@
 
 #include "asr_service.pb.h"
 
-using ASRSettings = std::map<std::string, std::string>;
+using ASRSessionSettings = std::map<std::string, std::string>;
 
 namespace sarmata
 {
