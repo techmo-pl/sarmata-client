@@ -107,9 +107,10 @@ message DefineGrammarRespone
     URI_FAILURE = 9; 
     LANGUAGE_UNSUPPORTED = 10;
     CANCELLED = 11;
+    SEMANTICS_FAILURE = 12;
     
-    START_OF_INPUT = 12;
-    END_OF_AUDIO = 13;
+    START_OF_INPUT = 13;
+    END_OF_AUDIO = 14;
   }
 
 // `RecognizeResponse` is the only message type returned to the client.
