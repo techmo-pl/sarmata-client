@@ -348,20 +348,20 @@ void protobuf_AddDesc_asr_5fservice_2eproto() {
     "\007correct\030\003 \001(\010\022\037\n\027semantic_interpretatio"
     "n\030\004 \001(\t\032[\n\004Word\022\022\n\ntranscript\030\001 \001(\t\022\022\n\nc"
     "onfidence\030\002 \001(\001\022\r\n\005start\030\003 \001(\005\022\013\n\003end\030\004 "
-    "\001(\005\022\017\n\007logprob\030\005 \001(\001*\322\002\n\016ResponseStatus\022"
-    "\013\n\007SUCCESS\020\000\022\021\n\rPARTIAL_MATCH\020\001\022\014\n\010NO_MA"
-    "TCH\020\002\022\024\n\020NO_INPUT_TIMEOUT\020\003\022\027\n\023RECOGNITI"
-    "ON_TIMEOUT\020\004\022\030\n\024GRAMMAR_LOAD_FAILURE\020\005\022\037"
-    "\n\033GRAMMAR_COMPILATION_FAILURE\020\006\022\024\n\020RECOG"
-    "NIZER_ERROR\020\007\022\033\n\027TOO_MUCH_SPEECH_TIMEOUT"
-    "\020\010\022\017\n\013URI_FAILURE\020\t\022\030\n\024LANGUAGE_UNSUPPOR"
-    "TED\020\n\022\r\n\tCANCELLED\020\013\022\025\n\021SEMANTICS_FAILUR"
-    "E\020\014\022\022\n\016START_OF_INPUT\020\r\022\020\n\014END_OF_AUDIO\020"
-    "\0162\234\001\n\003ASR\022F\n\tRecognize\022\031.sarmata.Recogni"
-    "zeRequest\032\032.sarmata.RecognizeResponse(\0010"
-    "\001\022M\n\rDefineGrammar\022\035.sarmata.DefineGramm"
-    "arRequest\032\035.sarmata.DefineGrammarRespone"
-    "b\006proto3", 1448);
+    "\001(\005\022\017\n\007logprob\030\005 \001(\001*\335\002\n\016ResponseStatus\022"
+    "\t\n\005EMPTY\020\000\022\013\n\007SUCCESS\020\001\022\021\n\rPARTIAL_MATCH"
+    "\020\002\022\014\n\010NO_MATCH\020\003\022\024\n\020NO_INPUT_TIMEOUT\020\004\022\027"
+    "\n\023RECOGNITION_TIMEOUT\020\005\022\030\n\024GRAMMAR_LOAD_"
+    "FAILURE\020\006\022\037\n\033GRAMMAR_COMPILATION_FAILURE"
+    "\020\007\022\024\n\020RECOGNIZER_ERROR\020\010\022\033\n\027TOO_MUCH_SPE"
+    "ECH_TIMEOUT\020\t\022\017\n\013URI_FAILURE\020\n\022\030\n\024LANGUA"
+    "GE_UNSUPPORTED\020\013\022\r\n\tCANCELLED\020\014\022\025\n\021SEMAN"
+    "TICS_FAILURE\020\r\022\022\n\016START_OF_INPUT\020\016\022\020\n\014EN"
+    "D_OF_AUDIO\020\0172\234\001\n\003ASR\022F\n\tRecognize\022\031.sarm"
+    "ata.RecognizeRequest\032\032.sarmata.Recognize"
+    "Response(\0010\001\022M\n\rDefineGrammar\022\035.sarmata."
+    "DefineGrammarRequest\032\035.sarmata.DefineGra"
+    "mmarResponeb\006proto3", 1459);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "asr_service.proto", &protobuf_RegisterTypes);
   RecognizeRequest::default_instance_ = new RecognizeRequest();
@@ -416,6 +416,7 @@ bool ResponseStatus_IsValid(int value) {
     case 12:
     case 13:
     case 14:
+    case 15:
       return true;
     default:
       return false;

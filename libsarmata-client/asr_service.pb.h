@@ -50,26 +50,27 @@ class RecognizeRequest;
 class RecognizeResponse;
 
 enum ResponseStatus {
-  SUCCESS = 0,
-  PARTIAL_MATCH = 1,
-  NO_MATCH = 2,
-  NO_INPUT_TIMEOUT = 3,
-  RECOGNITION_TIMEOUT = 4,
-  GRAMMAR_LOAD_FAILURE = 5,
-  GRAMMAR_COMPILATION_FAILURE = 6,
-  RECOGNIZER_ERROR = 7,
-  TOO_MUCH_SPEECH_TIMEOUT = 8,
-  URI_FAILURE = 9,
-  LANGUAGE_UNSUPPORTED = 10,
-  CANCELLED = 11,
-  SEMANTICS_FAILURE = 12,
-  START_OF_INPUT = 13,
-  END_OF_AUDIO = 14,
+  EMPTY = 0,
+  SUCCESS = 1,
+  PARTIAL_MATCH = 2,
+  NO_MATCH = 3,
+  NO_INPUT_TIMEOUT = 4,
+  RECOGNITION_TIMEOUT = 5,
+  GRAMMAR_LOAD_FAILURE = 6,
+  GRAMMAR_COMPILATION_FAILURE = 7,
+  RECOGNIZER_ERROR = 8,
+  TOO_MUCH_SPEECH_TIMEOUT = 9,
+  URI_FAILURE = 10,
+  LANGUAGE_UNSUPPORTED = 11,
+  CANCELLED = 12,
+  SEMANTICS_FAILURE = 13,
+  START_OF_INPUT = 14,
+  END_OF_AUDIO = 15,
   ResponseStatus_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   ResponseStatus_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool ResponseStatus_IsValid(int value);
-const ResponseStatus ResponseStatus_MIN = SUCCESS;
+const ResponseStatus ResponseStatus_MIN = EMPTY;
 const ResponseStatus ResponseStatus_MAX = END_OF_AUDIO;
 const int ResponseStatus_ARRAYSIZE = ResponseStatus_MAX + 1;
 
