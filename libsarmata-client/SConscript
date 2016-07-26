@@ -1,0 +1,15 @@
+import os
+
+Import("env")
+
+penv = env.Clone()
+
+penv.Append(LIBS = [
+    'pthread',
+])
+
+myfiles = Glob('*.cpp')
+
+myobjects = penv.Object(myfiles)
+
+penv.Library('libsarmata-client', myobjects)
