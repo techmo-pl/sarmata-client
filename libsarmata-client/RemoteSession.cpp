@@ -3,7 +3,7 @@
 namespace sarmata
 {
 
-RemoteSession::RemoteSession(const std::string & host, const std::string & token, const ASRSettings & settings)
+RemoteSession::RemoteSession(const std::string & host, const std::string & token, const ASRSessionSettings & settings)
 {
     //as
 }
@@ -18,7 +18,7 @@ void RemoteSession::EndOfStream()
 
 }
 
-RecognizeResponse WaitForResponse(void)
+RecognizeResponse RemoteSession::WaitForResponse(void)
 {
     return RecognizeResponse();
 }

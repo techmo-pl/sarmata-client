@@ -13,6 +13,7 @@ namespace sarmata
 {
     class IASRSession
     {
+    public:
         virtual void AddSamples(const std::vector<short> & data) = 0;
 
         virtual void EndOfStream() = 0;

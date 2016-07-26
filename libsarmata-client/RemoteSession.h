@@ -13,7 +13,7 @@ namespace sarmata
 
         virtual void EndOfStream() override;
 
-        virtual RecognizeResponse WaitForResponse(void) override;
+        virtual RecognizeResponse WaitForResponse() override;
     };
 
 }

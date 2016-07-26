@@ -4,11 +4,7 @@ Import("env")
 
 penv = env.Clone()
 
-penv.Append(LIBS = [
-    'pthread',
-])
-
-myfiles = Glob('*.cpp')
+myfiles = Glob('*.cpp') + Glob('*.cc')
 
 myobjects = penv.Object(myfiles)
 
