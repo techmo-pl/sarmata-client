@@ -1,0 +1,54 @@
+import os
+
+AddOption('--shared', dest='shared', action='store_true', default=False,
+    help='When specified, sarmata is compiled with -fPIC option.')
+AddOption('--dbg', dest='dbg', action='store_true', default=False,
+    help='compiles with -g, -O0')
+
+print("************************************************")
+print("***  Running SCons build for sarmata-client  ***")
+print("************************************************")
+
+env = Environment(tools=['default'])
+
+grpc_root = '/opt/grpc/'
+
+Export('grpc_root')
+
+env.Append(
+    CPPPATH = [
+        '/opt/boost_1_60_0', 
+        grpc_root + 'third_party/protobuf/src',
+        os.getcwd(),
+    ]
+)
+
+env.Append(
+    CPPFLAGS = [
+        '-std=c++11', 
+        '-m64',
+    ] \
+    + (['-fPIC'] if GetOption('shared') else []) \
+    + (['-O0', '-g'] if GetOption('dbg') else ['-O3'])
+)
+
+env.Append(
+    LIBPATH = [
+        '/opt/boost_1_60_0/stage/lib', 
+        grpc_root + 'third_party/protobuf/src/.libs', 
+    ]
+)
+
+subdirs = [
+    'libsarmata-client',
+]
+for dir in subdirs:
+    env.Append(LIBPATH = [os.path.join(os.getcwd(), 'build', dir)])
+
+# The exports attribute allows you to pass variables to the subdir SConscripts
+for dir in subdirs:
+    SConscript( os.path.join(dir, 'SConscript'), exports = ['env'], variant_dir = os.path.join('build', dir), duplicate=0)
+
+VariantDir(os.path.join('build', 'sarmata-client'), 'sarmata-client' )
+SConscript( 'sarmata-client/SConscript', exports = ['env'])
+

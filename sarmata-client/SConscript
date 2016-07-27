@@ -1,0 +1,35 @@
+import os
+
+Import("env")
+
+Import('grpc_root')
+
+
+penv = env.Clone()
+
+penv.Append(CPPPATH = ['/home/skurzok/kaldi/kaldi-trunk/src'])
+
+penv.Append(LIBS = [
+    'sarmata-client',
+    'boost_program_options',
+    'protobuf',
+    'pthread',
+    'dl',
+])
+
+penv.Append(LINKFLAGS=[
+    grpc_root + '/libs/opt/libgpr.a',
+    grpc_root + '/libs/opt/libgrpc++.a',
+    grpc_root + '/libs/opt/libgrpc.a',
+    grpc_root + '/libs/opt/libboringssl.a',
+    grpc_root + '/libs/opt/libz.a',
+    grpc_root + '/libs/opt/libz.a',
+])
+
+penv['LINKCOM'] = '$LINK -o $TARGET $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS $LINKFLAGS'
+
+myfiles = Glob('*.cpp')
+
+myobjects = penv.Object(myfiles)
+
+penv.Program('sarmata-client', myobjects, )
