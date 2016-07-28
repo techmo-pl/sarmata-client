@@ -12,7 +12,6 @@ penv.Append(CPPPATH = ['/home/skurzok/kaldi/kaldi-trunk/src'])
 penv.Append(LIBS = [
     'sarmata-client',
     'boost_program_options',
-    'protobuf',
     'pthread',
     'dl',
 ])
@@ -24,6 +23,8 @@ penv.Append(LINKFLAGS=[
     grpc_root + '/libs/opt/libboringssl.a',
     grpc_root + '/libs/opt/libz.a',
     grpc_root + '/libs/opt/libz.a',
+    grpc_root + '/third_party/protobuf/src/.libs/libprotobuf.a',
+    '-lpthread'
 ])
 
 penv['LINKCOM'] = '$LINK -o $TARGET $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS $LINKFLAGS'
