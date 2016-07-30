@@ -16,14 +16,17 @@ namespace sarmata
     class RemoteSession: public IASRSession
     {
     public:
-        RemoteSession(const std::string & host, const std::string & token, const ASRSessionSettings & settings);
+        RemoteSession(const std::string & host);
+        
+        virtual void Open(const std::string & token, const ASRSessionSettings & settings);
+        
         virtual void AddSamples(const std::vector<short> & data) override;
 
         virtual void EndOfStream() override;
 
         virtual RecognizeResponse WaitForResponse() override;
     private:
-            
+        std::string host_;
         std::unique_ptr<ASR::Stub> stub_;
         grpc::ClientContext context_;
         std::unique_ptr<grpc::ClientReaderWriter<RecognizeRequest, RecognizeResponse> > stream_;

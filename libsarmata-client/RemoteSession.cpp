@@ -5,12 +5,18 @@
 namespace sarmata
 {
 
-RemoteSession::RemoteSession(const std::string & host, const std::string & token, const ASRSessionSettings & settings)
-    : stub_(ASR::NewStub(
-        grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials())))
-    , stream_(stub_->Recognize(&context_))
+RemoteSession::RemoteSession(const std::string & host)
+    : host_(host)
 {
 
+}
+
+
+void RemoteSession::Open(const std::string & token, const ASRSessionSettings & settings)
+{
+    stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
+    stream_ = stub_->Recognize(&context_);
+    
     InitialRecognizeRequest initial;
     for (const auto & field : settings)
     {

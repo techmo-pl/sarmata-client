@@ -42,8 +42,8 @@ int main(int ac, char* av[])
     }
     settings["grammar_data"] = grammar;
     
-    RemoteSession session(av[1], "", settings);
-    
+    RemoteSession session(av[1]);
+    session.Open("", settings);
     session.AddSamples(data);
     session.EndOfStream();
     
