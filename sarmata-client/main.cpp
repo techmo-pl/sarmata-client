@@ -12,6 +12,7 @@
 
 #include "libsarmata-client/asr_service.grpc.pb.h"
 #include "libsarmata-client/RemoteSession.h"
+#include "libsarmata-client/ASRSessionUtils.h"
 
 std::vector<short> loadWave(const std::string & path);
 
@@ -47,62 +48,37 @@ int main(int ac, char* av[])
     session.AddSamples(data);
     session.EndOfStream();
     
-    RecognizeResponse res;
+    RecognizeResponse response;
     do{
-        res = session.WaitForResponse();
-        std::cout << res.status() << std::endl;
-    } while(res.status() != EMPTY && res.status() != END_OF_AUDIO);
-    
-    //auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-    //
-    //ClientContext context;
-    //
-    //auto stub_ = ASR::NewStub(channel);
-    //
-    ////// define gramamr
-    ////{
-    ////    
-    ////    DefineGrammarRequest req;
-    ////    req.set_name("client_test");
-    ////    DefineGrammarRespone res;     
-    ////    Status status = stub_->DefineGrammar(&context, req, &res);
-    ////    
-    ////    if (!status.ok()) {
-    ////        std::cout << "DefineGrammar rpc failed: " << status.error_message() << std::endl;
-    ////        return false;
-    ////    }
-    ////    
-    ////    std::cout << res.grammarname() << std::endl;
-    ////}
-    //
-    //std::shared_ptr<ClientReaderWriter<RecognizeRequest, RecognizeResponse> > stream(
-    //    stub_->Recognize(&context));
-    //
-    //std::thread writer([stream]() {
-    //    InitialRecognizeRequest initial;
-    //    initial.set_token("dawid");
-    //    RecognizeRequest request;
-    //    *request.mutable_initial_request() = initial;
-    //    std::cout << "writing" << std::endl;
-    //    while (true)
-    //    {
-    //        stream->Write(request);
-    //        std::cout << "message send" << std::endl;
-	//        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    //        
-    //    }
-    //});
-    //
-    //RecognizeResponse response;
-    //std::cout << "reading" << std::endl;
-    //while (stream->Read(&response)) {
-    //  std::cout << "Got message " << response.status() << std::endl;
-    //}
-    //writer.join();
-    //Status status = stream->Finish();
-    //if (!status.ok()) {
-    //  std::cout << "RouteChat rpc failed." << std::endl;
-    //}
+        response = session.WaitForResponse();
+        if (response.status() != EMPTY)
+        {
+            std::cout << "event " << response.status() << " at " << response.event_time() << std::endl;
+        }
+        if (response.results().size())
+        {
+            auto showPath = [](const Phrase & path)
+            {
+                using namespace std;
+                int w = 0, gp = 0, gs = 0;
+                for (const auto & word : path.words())
+                {
+                    cout << ++w << ". " << word.transcript() << " [" << word.start() << " - " << word.end() << "] (" << word.logprob() << ") " << word.confidence() <<  endl;
+                }
+                if (path.semantic_interpretation().size())
+                {
+                    cout << "SI:" << endl;
+                    cout << path.semantic_interpretation() << endl;
+                }
+                cout << "Path confidence: " << path.confidence() << endl;
+            };
+            for (int i = 0; i < response.results().size(); i++)
+            {
+                std::cout << "paths nr " << i + 1 << ":" << std::endl;
+                showPath(response.results(i));
+            }
+        }
+    } while(response.status() != EMPTY && response.status() != END_OF_AUDIO);
     
 }
 
