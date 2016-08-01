@@ -7,10 +7,7 @@ namespace sarmata
 
 RemoteSession::RemoteSession(const std::string & host)
     : host_(host)
-{
-
-}
-
+{}
 
 void RemoteSession::Open(const std::string & token, const ASRSessionSettings & settings)
 {

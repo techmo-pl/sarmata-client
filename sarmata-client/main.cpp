@@ -26,7 +26,7 @@ int main(int ac, char* av[])
     using grpc::Status;
     using grpc::ClientReaderWriter;
     using namespace sarmata;
-    
+
     if (ac < 4)
     {
         std::cout << "Usage:\n" << 
