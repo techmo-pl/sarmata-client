@@ -17,6 +17,7 @@ namespace sarmata
     {
     public:
         RemoteSession(const std::string & host);
+        ~RemoteSession();
         
         virtual void Open(const std::string & token, const ASRSessionSettings & settings);
         

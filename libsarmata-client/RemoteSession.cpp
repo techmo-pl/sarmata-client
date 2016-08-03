@@ -8,6 +8,14 @@ namespace sarmata
 RemoteSession::RemoteSession(const std::string & host)
     : host_(host)
 {}
+RemoteSession::~RemoteSession()
+{
+    if (stream_)
+    {
+        stream_->WritesDone();
+        stream_->Finish();
+    }
+}
 
 void RemoteSession::Open(const std::string & token, const ASRSessionSettings & settings)
 {
