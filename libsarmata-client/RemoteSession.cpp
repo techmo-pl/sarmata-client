@@ -8,6 +8,7 @@ namespace sarmata
 RemoteSession::RemoteSession(const std::string & host)
     : host_(host)
 {}
+
 RemoteSession::~RemoteSession()
 {
     if (stream_)
@@ -31,7 +32,11 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
     }
     RecognizeRequest request;
     *request.mutable_initial_request() = initial;
-    stream_->Write(request);
+    bool ok = stream_->Write(request);
+    if (!ok)
+    {
+        throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
+    }
 }
 
 void RemoteSession::AddSamples(const std::vector<short> & data)
@@ -44,7 +49,11 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
     
     RecognizeRequest request;
     *request.mutable_audio_request() = audio;
-    stream_->Write(request);
+    bool ok = stream_->Write(request);
+    if (!ok)
+    {
+        throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
+    }
 }
 
 void RemoteSession::EndOfStream()
@@ -53,14 +62,25 @@ void RemoteSession::EndOfStream()
     audio.set_end_of_stream(true);
     RecognizeRequest request;
     *request.mutable_audio_request() = audio;
-    stream_->Write(request);
-
+    bool ok = stream_->Write(request);
+    if (!ok)
+    {
+        throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
+    }
 }
 
 RecognizeResponse RemoteSession::WaitForResponse(void)
 {
     RecognizeResponse response;
-    stream_->Read(&response);
+    bool ok = stream_->Read(&response);
+    if (!ok)
+    {
+        auto status = stream_->Finish();
+        if (status.error_code() != grpc::OK)
+        {
+            throw std::runtime_error("Error while reading message: " + status.error_message());
+        }
+    }
     return response;
 }
 
