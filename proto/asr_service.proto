@@ -75,28 +75,29 @@ message DefineGrammarRequest
 message DefineGrammarRespone
 {
   // error description
-  string error       = 1;
+  string error = 1;
   
   // true if grammar is was created
-  bool ok;
+  bool ok      = 2;
 }
 
 //////////////
 
 enum ResponseStatus
 {
-EMPTY = 0;                       // Should not be set
-SUCCESS = 1;                     // Phrase recognized
-PARTIAL_MATCH = 2;               // only beginning of utterence recognized
-NO_MATCH = 3;                    // no phrse recognized
-NO_INPUT_TIMEOUT = 4;            // no spech or no match in expected time
-GRAMMAR_LOAD_FAILURE = 5;        // grammar connot be loaded, more details in `error` filed
-GRAMMAR_COMPILATION_FAILURE = 6; // grammar compilation error, more details in `error` filed
-RECOGNIZER_ERROR = 7;            // iternal error
-TOO_MUCH_SPEECH_TIMEOUT = 8;     // speech to long
-CANCELLED = 9;                   // recognition cancelled
-START_OF_INPUT = 10;             // start of speech detected
-END_OF_AUDIO = 11;               // finished processing
+  EMPTY = 0;                       // Should not be set
+  SUCCESS = 1;                     // Phrase recognized
+  PARTIAL_MATCH = 2;               // only beginning of utterence recognized
+  NO_MATCH = 3;                    // no phrse recognized
+  NO_INPUT_TIMEOUT = 4;            // no spech or no match in expected time
+  GRAMMAR_LOAD_FAILURE = 5;        // grammar connot be loaded, more details in `error` filed
+  GRAMMAR_COMPILATION_FAILURE = 6; // grammar compilation error, more details in `error` filed
+  RECOGNIZER_ERROR = 7;            // iternal error
+  TOO_MUCH_SPEECH_TIMEOUT = 8;     // speech to long
+  CANCELLED = 9;                   // recognition cancelled
+  START_OF_INPUT = 10;             // start of speech detected
+  END_OF_AUDIO = 11;               // finished processing
+  SEMANTICS_FAILURE = 12;          // error in SI processing
 }
 
 message RecognizeResponse {
