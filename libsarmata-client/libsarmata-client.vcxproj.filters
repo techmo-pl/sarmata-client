@@ -30,6 +30,9 @@
     <ClInclude Include="asr_service.grpc.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ASRSessionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asr_service.pb.cc">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="asr_service.grpc.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ASRSessionUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

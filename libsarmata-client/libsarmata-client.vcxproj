@@ -82,11 +82,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASRSession.h" />
+    <ClInclude Include="ASRSessionUtils.h" />
     <ClInclude Include="asr_service.grpc.pb.h" />
     <ClInclude Include="asr_service.pb.h" />
     <ClInclude Include="RemoteSession.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ASRSessionUtils.cpp" />
     <ClCompile Include="asr_service.grpc.pb.cc" />
     <ClCompile Include="asr_service.pb.cc" />
     <ClCompile Include="RemoteSession.cpp" />

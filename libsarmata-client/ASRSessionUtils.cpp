@@ -4,7 +4,7 @@
 
 namespace sarmata
 {
-    std::ostream * operator<<(std::ostream & stream, ResponseStatus status)
+    std::ostream & operator<<(std::ostream & stream, ResponseStatus status)
     {
         switch (status)
         {
@@ -24,6 +24,8 @@ namespace sarmata
             case SEMANTICS_FAILURE           : stream << "SEMANTICS_FAILURE"; break;
             case START_OF_INPUT              : stream << "START_OF_INPUT"; break;
             case END_OF_AUDIO                : stream << "END_OF_AUDIO"; break;
+            default                          : stream << "EVENT(" << status << ")"; break;
         }
+        return stream;
     }    
 }
