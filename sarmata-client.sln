@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sarmata-client", "sarmata-client\sarmata-client.vcxproj", "{F982C4F1-8B46-41E3-92C0-F4EEB18DD461}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CB4A739B-877A-407C-8145-F43DA1B60A2D} = {CB4A739B-877A-407C-8145-F43DA1B60A2D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsarmata-client", "libsarmata-client\libsarmata-client.vcxproj", "{CB4A739B-877A-407C-8145-F43DA1B60A2D}"
 EndProject
