@@ -249,3 +249,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 .sconsign.dblite
+cpp/sarmata-client/sarmata-client
