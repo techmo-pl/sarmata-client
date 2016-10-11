@@ -21,7 +21,7 @@ namespace sarmata
             case SEMANTICS_FAILURE           : stream << "SEMANTICS_FAILURE"; break;
             case START_OF_INPUT              : stream << "START_OF_INPUT"; break;
             case END_OF_AUDIO                : stream << "END_OF_AUDIO"; break;
-            default                          : stream << "EVENT(" << status << ")"; break;
+            default                          : stream << "EVENT(" << static_cast<int>(status) << ")"; break;
         }
         return stream;
     }    

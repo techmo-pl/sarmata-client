@@ -45,6 +45,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(GRPC)\include;$(GRPC)\third_party\protobuf\src;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(GRPC)\include;$(GRPC)\third_party\protobuf\src;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
