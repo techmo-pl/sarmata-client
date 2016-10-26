@@ -71,6 +71,10 @@ void RemoteSession::EndOfStream()
 
 RecognizeResponse RemoteSession::WaitForResponse(void)
 {
+    if (!stream_)
+    {
+        return RecognizeResponse();
+    }
     RecognizeResponse response;
     bool ok = stream_->Read(&response);
     if (!ok)
@@ -79,6 +83,10 @@ RecognizeResponse RemoteSession::WaitForResponse(void)
         if (status.error_code() != grpc::OK)
         {
             throw std::runtime_error("Error while reading message: " + status.error_message());
+        }
+        else
+        {
+            stream_.reset();
         }
     }
     return response;
