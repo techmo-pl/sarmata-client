@@ -13,7 +13,10 @@ RemoteSession::~RemoteSession()
 {
     if (stream_)
     {
-        stream_->WritesDone();
+		if(!samplesStreamCompleted)
+		{
+			stream_->WritesDone();
+		}
         stream_->Finish();
     }
 }
@@ -22,6 +25,7 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
 {
     stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
     stream_ = stub_->Recognize(&context_);
+	samplesStreamCompleted = false;
     
     InitialRecognizeRequest initial;
     for (const auto & field : settings)
@@ -41,6 +45,11 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
 
 void RemoteSession::AddSamples(const std::vector<short> & data)
 {
+	if(samplesStreamCompleted)
+    {
+		throw std::runtime_error("Stream closed");
+	}
+	
     AudioRequest audio;
     std::string content(data.size() * sizeof(short), 0);
     std::memcpy( (char*)content.data(), data.data(), content.size());
@@ -58,6 +67,11 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
 
 void RemoteSession::EndOfStream()
 {
+	if(samplesStreamCompleted)
+    {
+		throw std::runtime_error("Stream closed");
+	}
+	
     AudioRequest audio;
     audio.set_end_of_stream(true);
     RecognizeRequest request;
@@ -67,6 +81,12 @@ void RemoteSession::EndOfStream()
     {
         throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
     }
+	
+	//closing stream
+	{
+		stream_->WritesDone();
+		samplesStreamCompleted = false;
+	}
 }
 
 RecognizeResponse RemoteSession::WaitForResponse(void)
