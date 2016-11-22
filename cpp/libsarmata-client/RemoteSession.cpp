@@ -41,6 +41,27 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
 
 void RemoteSession::AddSamples(const std::vector<short> & data)
 {
+    const auto chunk_size = 3*1024*1024/sizeof(short);   // less then size in https://github.com/grpc/grpc/blob/v1.0.x/src/core/lib/surface/channel.c#L84
+    std::vector<short> chunk;
+    chunk.reserve(chunk_size);
+    for (int i = 0; i < data.size(); i++)
+    {
+        chunk.push_back(data[i]);
+        if (chunk.size() == chunk_size)
+        {
+            sendSamples(chunk);
+            chunk.clear();
+        }
+    }
+    if (chunk.size() != 0)
+    {
+        sendSamples(chunk);
+    }
+}
+
+
+void RemoteSession::sendSamples(const std::vector<short> & data)
+{
     AudioRequest audio;
     std::string content(data.size() * sizeof(short), 0);
     std::memcpy( (char*)content.data(), data.data(), content.size());
