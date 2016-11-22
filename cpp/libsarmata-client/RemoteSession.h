@@ -31,6 +31,7 @@ namespace sarmata
         std::unique_ptr<ASR::Stub> stub_;
         grpc::ClientContext context_;
         std::unique_ptr<grpc::ClientReaderWriter<RecognizeRequest, RecognizeResponse> > stream_;
+		bool samplesStreamCompleted_;
     };
 
 }
