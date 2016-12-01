@@ -2,6 +2,9 @@
 
 #include <cstring>
 
+#include <grpc++/client_context.h>
+#include <grpc++/create_channel.h>
+
 namespace sarmata
 {
 
