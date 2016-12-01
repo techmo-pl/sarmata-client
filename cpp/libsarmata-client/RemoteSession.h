@@ -21,10 +21,13 @@ namespace sarmata
 
         virtual RecognizeResponse WaitForResponse() override;
     private:
+        void sendSamples(const std::vector<short> & data);
+        
         std::string host_;
         std::unique_ptr<ASR::Stub> stub_;
         grpc::ClientContext context_;
         std::unique_ptr<grpc::ClientReaderWriter<RecognizeRequest, RecognizeResponse> > stream_;
+		bool samplesStreamCompleted_;
     };
 
 }

@@ -120,6 +120,7 @@ ASRSessionSettings loadSettings(const std::string & path)
     ASRSessionSettings settings;
     std::ifstream file(path);
     std::string line;
+    std::cout << "Additional options: " << std::endl;
     while (std::getline(file, line))
     {
         //if comment
@@ -127,7 +128,11 @@ ASRSessionSettings loadSettings(const std::string & path)
         std::stringstream ss(line);
         std::string key, value;
         ss >> key >> value;
-        settings.emplace(key, value);
+        if (key.size() && value.size())
+        {
+            settings.emplace(key, value);
+            std::cout << "\"" << key << "\" : \"" << value << "\"" << std::endl;
+        }
     }
     return settings;
 }

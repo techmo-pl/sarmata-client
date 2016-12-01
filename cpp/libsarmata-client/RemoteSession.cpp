@@ -10,13 +10,17 @@ namespace sarmata
 
 RemoteSession::RemoteSession(const std::string & host)
     : host_(host)
+    , samplesStreamCompleted_(false)
 {}
 
 RemoteSession::~RemoteSession()
 {
     if (stream_)
     {
-        stream_->WritesDone();
+		if(!samplesStreamCompleted_)
+		{
+			stream_->WritesDone();
+		}
         stream_->Finish();
     }
 }
@@ -25,6 +29,7 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
 {
     stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
     stream_ = stub_->Recognize(&context_);
+    samplesStreamCompleted_ = false;
     
     InitialRecognizeRequest initial;
     for (const auto & field : settings)
@@ -44,6 +49,32 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
 
 void RemoteSession::AddSamples(const std::vector<short> & data)
 {
+    if(samplesStreamCompleted_)
+    {
+        throw std::runtime_error("Stream closed");
+    }
+	
+    const auto chunk_size = 3*1024*1024/sizeof(short);   // less then size in https://github.com/grpc/grpc/blob/v1.0.x/src/core/lib/surface/channel.c#L84
+    std::vector<short> chunk;
+    chunk.reserve(chunk_size);
+    for (int i = 0; i < data.size(); i++)
+    {
+        chunk.push_back(data[i]);
+        if (chunk.size() == chunk_size)
+        {
+            sendSamples(chunk);
+            chunk.clear();
+        }
+    }
+    if (chunk.size() != 0)
+    {
+        sendSamples(chunk);
+    }
+}
+
+
+void RemoteSession::sendSamples(const std::vector<short> & data)
+{
     AudioRequest audio;
     std::string content(data.size() * sizeof(short), 0);
     std::memcpy( (char*)content.data(), data.data(), content.size());
@@ -61,6 +92,11 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
 
 void RemoteSession::EndOfStream()
 {
+    if(samplesStreamCompleted_)
+    {
+        throw std::runtime_error("Stream closed");
+    }
+	
     AudioRequest audio;
     audio.set_end_of_stream(true);
     RecognizeRequest request;
@@ -70,6 +106,11 @@ void RemoteSession::EndOfStream()
     {
         throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
     }
+	
+    //closing stream
+    stream_->WritesDone();
+    samplesStreamCompleted_ = true;
+
 }
 
 RecognizeResponse RemoteSession::WaitForResponse(void)
