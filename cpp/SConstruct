@@ -17,6 +17,7 @@ Export('grpc_root')
 
 env.Append(
     CPPPATH = [
+        grpc_root + '/include',
         grpc_root + 'third_party/protobuf/src',
         os.getcwd(),
     ]
