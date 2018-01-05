@@ -11,12 +11,13 @@ print("************************************************")
 
 env = Environment(tools=['default'])
 
-grpc_root = '/opt/grpc/'
+grpc_root = '/opt/grpc_v1.7.2/'
 
 Export('grpc_root')
 
 env.Append(
     CPPPATH = [
+        grpc_root + 'include',
         grpc_root + 'third_party/protobuf/src',
         os.getcwd(),
     ]

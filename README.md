@@ -1,7 +1,7 @@
 # sarmata-client
 Client to sarmata ASR grpc service
 
-Build on grpc v1.0 : https://github.com/grpc/grpc/tree/v1.0.x
+Build on grpc v1.7.2 : https://github.com/grpc/grpc/tree/v1.7.x
 
 The following configuration options are supported:
 

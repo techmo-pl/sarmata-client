@@ -25,6 +25,29 @@ RemoteSession::~RemoteSession()
     }
 }
 
+void RemoteSession::PreDefineGrammar(const std::string & grammarName, const std::string & grammarData)
+{
+    DefineGrammarRequest request;
+    request.set_name(grammarName);
+    request.set_grammar(grammarData);
+
+    DefineGrammarResponse response;
+
+    auto stub = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
+    grpc::ClientContext context;
+    const auto status = stub->DefineGrammar(&context, request, &response);
+
+    if (!status.ok())
+    {
+        throw std::runtime_error(std::string("DefineGrammar error: ") + status.error_message());
+    }
+
+    if (!response.ok())
+    {
+        throw std::runtime_error(std::string("Grammar not created: ") + response.error());
+    }
+}
+
 void RemoteSession::Open(const std::string & token, const ASRSessionSettings & settings)
 {
     stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));

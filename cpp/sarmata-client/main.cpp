@@ -34,6 +34,8 @@ int main(int ac, char* av[])
         av[0] << " host-address audio.wav grammar.txt [options.txt]" << std::endl;
         return 1;
     }
+
+    RemoteSession session(av[1]);
     auto data = loadWave(av[2]);
     auto grammar = fileContent(av[3]);
     ASRSessionSettings settings;
@@ -41,9 +43,11 @@ int main(int ac, char* av[])
     {
         settings = loadSettings(av[4]);
     }
-    settings["grammar_data"] = grammar;
+    constexpr auto grammar_name = "pre-defined-grammar";
+    settings["grammar-name"] = grammar_name;
     
-    RemoteSession session(av[1]);
+    session.PreDefineGrammar(grammar_name, grammar);
+
     session.Open("", settings);
     session.AddSamples(data);
     session.EndOfStream();

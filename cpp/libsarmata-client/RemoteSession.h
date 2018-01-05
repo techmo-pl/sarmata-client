@@ -12,14 +12,16 @@ namespace sarmata
     public:
         RemoteSession(const std::string & host);
         ~RemoteSession();
-        
-        virtual void Open(const std::string & token, const ASRSessionSettings & settings);
-        
-        virtual void AddSamples(const std::vector<short> & data) override;
 
-        virtual void EndOfStream() override;
+        void PreDefineGrammar(const std::string & grammarName, const std::string & grammarData) override;
 
-        virtual RecognizeResponse WaitForResponse() override;
+        void Open(const std::string & token, const ASRSessionSettings & settings) override;
+
+        void AddSamples(const std::vector<short> & data) override;
+
+        void EndOfStream() override;
+
+        RecognizeResponse WaitForResponse() override;
     private:
         void sendSamples(const std::vector<short> & data);
         
