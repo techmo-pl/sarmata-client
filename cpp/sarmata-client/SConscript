@@ -20,8 +20,7 @@ penv.Append(LINKFLAGS=[
     grpc_root + '/libs/opt/libgrpc++.a',
     grpc_root + '/libs/opt/libgrpc++_reflection.a',
     grpc_root + '/libs/opt/libgrpc_unsecure.a',
-    grpc_root + '/libs/opt/libboringssl.a',
-    grpc_root + '/libs/opt/libz.a',
+    grpc_root + '/third_party/zlib/libz.a',
     grpc_root + '/third_party/protobuf/src/.libs/libprotobuf.a',
     '-lpthread'
 ])
