@@ -5,6 +5,14 @@ requires:
 - scons
 - c++11 compatible compiler
 
+
+To regenerate sources from `.proto`, run:
+```
+./make_proto.sh
+```
+This might be required when using other gRPC or Protocol Buffers version.
+
+
 build command:
 ```
 scons
