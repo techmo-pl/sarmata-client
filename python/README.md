@@ -1,11 +1,24 @@
 Techmo Sarmata ASR - python client.
 
-Stream audio to the ASR engine and prints all reponses:
+Stream audio from wave or microphone to the ASR engine and prints all reponses:
  - status, 
  - transcription, 
- - semantic interpreatation, 
+ - semantic interpretation, 
  - confidence,
 (when applicable).
+
+Dependencies (listed in requirements.txt):
+ - grpcio
+ - grpcio-tools
+ - protobuf
+ - pydub
+ - pyaudio
+
+To regenerate sources from `.proto`, run (virtualenv must be enabled before):
+```
+./make_proto.sh
+```
+This might be required when using other gRPC or Protocol Buffers version.
 
 To run:
  - Use python 3.5 with virtual environment and install required packages.
@@ -17,22 +30,15 @@ To run:
   pip install -r requirements.txt
 ```
 
-Dependencies (listed in requirements.txt):
- - grpcio
- - grpcio-tools
- - protobuf
- - pydub
-  
-To regenerate sources from `.proto`, run:
-```
-./make_proto.sh
-```
-This might be required when using other gRPC or Protocol Buffers version.
 
-
-**Run:**
+**Run (wave):**
 ```
   python sarmata_client.py --address ip:port --grammar grammar_file.xml --wave audio.wav
+```
+ 
+**Run (microphone):**
+```
+  python sarmata_client.py --address ip:port --grammar grammar_file.xml --mic
 ```
  
 There is a possibility to define grammar before recognitions:
@@ -42,4 +48,8 @@ There is a possibility to define grammar before recognitions:
 and then run recognition:
 ```
   python sarmata_client.py --address ip:port --grammar-name simple_grammar --wave audio.wav
+```
+or
+```
+  python sarmata_client.py --address ip:port --grammar-name simple_grammar --mic
 ```

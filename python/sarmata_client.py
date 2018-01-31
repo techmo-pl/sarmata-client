@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from argparse import ArgumentParser
-from utils.wave_loader import load_wave
 from service.sarmata_settings import SarmataSettings
 from service.sarmata_recognize import SarmataRecognizer
-from service.asr_service_pb2 import ResponseStatus
+from service.asr_service_pb2 import ResponseStatus, EMPTY, START_OF_INPUT
+from utils.audio_source import AudioStream
+from utils.mic_source import MicrophoneStream
 import sys
-import os
 from VERSION import SARMATA_CLIENT_VERSION
 
 
-def print_results(responses):
+def print_results(responses, stream):
     if responses is None:
         print("Empty results - None object")
         return
@@ -26,11 +26,41 @@ def print_results(responses):
         if response.error:
             print("[ERROR]: {}".format(response.error))
 
+        # single response expected
+        processing_completed = True
+        if response.status == START_OF_INPUT or response.status == EMPTY:
+            processing_completed = False
+
+        if processing_completed:
+            stream.close()
+
         n = 1
         for res in response.results:
             transcript = " ".join([word.transcript for word in res.words])
             print("[{}.] {} /{}/ ({})".format(n, transcript, res.semantic_interpretation, res.confidence))
             n += 1
+
+
+def validate_recognition_settings(settings):
+    if not settings.grammar_name and not settings.grammar:
+        print("Bad usage. Recognize usage: `sarmata_client.py --address <service_addres> "
+              "[--wave <wave_file> | --mic] {--grammar-name <grammar_name>, --grammar <grammar_file>}`")
+        sys.exit(1)
+
+
+def create_audio_stream(args):
+    # create wave file stream
+    if args.wave is not None:
+        return AudioStream(args.wave)
+
+    # create microphone stream
+    if args.mic:
+        rate = 16000  # [Hz]
+        chunk = int(rate / 10)  # [100 ms]
+        return MicrophoneStream(rate, chunk)
+
+    # default
+    raise ValueError("Unknown media source to create")
 
 
 if __name__ == '__main__':
@@ -45,6 +75,7 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--grammar", help="SRGS grammar file (ABNF or XML format accepted)")
     parser.add_argument("--wave", help="Wave path, should be mono, 8kHz or 16kHz")
+    parser.add_argument("--mic", help="Use microphone as an audio source (instead of wave file)", action='store_true')
 
     # Timeouts, settings
     parser.add_argument("--nbest", help="Maximal number of hypotheses", default=3, type=int)
@@ -67,8 +98,7 @@ if __name__ == '__main__':
             print("Bad usage. Define grammar usage: `sarmata_client.py --address <service_address> "
                   "--define-grammar --grammar-name <grammar_name> --grammar <grammar_file>`")
             sys.exit(1)
-        else:
-            can_define_grammar = True
+        can_define_grammar = True
 
     recognizer = SarmataRecognizer(args.address)
 
@@ -79,16 +109,16 @@ if __name__ == '__main__':
         else:
             print("Define grammar error: " + define_grammar_response.error)
 
-    if args.wave is not None:
-        if not settings.grammar_name and not settings.grammar:
-            print("Bad usage. Recognize usage: `sarmata_client.py --address <service_addres> "
-                  "--wave <wave_file> {--grammar-name <grammar_name>, --grammar <grammar_file>}`")
-        else:
-            session_id = os.path.basename(args.wave)
+    # --------------------------
+    # recognize section
+    # --------------------------
+    if args.wave is not None or args.mic:
+        validate_recognition_settings(settings)
+
+        with create_audio_stream(args) as stream:
+            # generate id
+            session_id = stream.session_id()
             settings.set_session_id(session_id)
 
-            audio = load_wave(args.wave)
-
-            results = recognizer.recognize(audio, settings)
-
-            print_results(results)
+            results = recognizer.recognize(stream, settings)
+            print_results(results, stream)
