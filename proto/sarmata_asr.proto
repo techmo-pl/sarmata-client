@@ -72,10 +72,11 @@ message RecognitionConfig {
   // `DefineGrammar` method or a full grammar data.
   oneof grammar {
     // Grammar ID of a stored grammar to use for the recognition.
-    string name = 1;
+    string name = 5;
 
     // Grammar data to use for the recognition.
-    string data = 2;
+    string data = 6;
+  }
 }
 
 // Provides a pair of configuration field name and value.
