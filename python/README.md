@@ -56,3 +56,8 @@ or
 ```
 python sarmata_client.py --address ip:port --grammar-name simple_grammar --mic
 ```
+
+To delete a cached grammar, run with --define-grammar and --grammar-name options only (no --grammar option):
+```
+python sarmata_client.py --address ip:port --define-grammar --grammar-name grammar_to_delete
+```
