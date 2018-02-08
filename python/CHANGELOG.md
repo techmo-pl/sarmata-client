@@ -4,7 +4,7 @@
 ### Fixed
 - Possibility to delete cached grammar.
 
-## [1.0.0] - 2018-02-01
+## [1.1.0] - 2018-02-01
 ### Added
 - Microphone as an audio source support.
 
