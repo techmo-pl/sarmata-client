@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     can_define_grammar = False
     if args.define_grammar:
-        if not settings.grammar_name or not settings.grammar:
+        if not settings.grammar_name:
             print("Bad usage. Define grammar usage: `sarmata_client.py --address <service_address> "
                   "--define-grammar --grammar-name <grammar_name> --grammar <grammar_file>`")
             sys.exit(1)
@@ -105,7 +105,10 @@ if __name__ == '__main__':
     if can_define_grammar:
         define_grammar_response = recognizer.define_grammar(args.grammar_name, settings.grammar)
         if define_grammar_response.ok:
-            print("Grammar " + args.grammar + " defined as " + args.grammar_name)
+            if args.grammar == None:
+                print("Grammar " + args.grammar_name + " removed")
+            else:
+                print("Grammar " + args.grammar + " defined as " + args.grammar_name)
         else:
             print("Define grammar error: " + define_grammar_response.error)
 
