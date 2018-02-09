@@ -5,8 +5,7 @@
 #include <grpc++/client_context.h>
 #include <grpc++/create_channel.h>
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
 
 RemoteSession::RemoteSession(const std::string & host)
     : host_(host)
@@ -54,15 +53,15 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
     stream_ = stub_->Recognize(&context_);
     samplesStreamCompleted_ = false;
     
-    InitialRecognizeRequest initial;
+    RecognitionConfig config;
     for (const auto & field : settings)
     {
-        auto * configField = initial.add_config();
+        auto * configField = config.add_config();
         configField->set_key(field.first);
         configField->set_value(field.second);
     }
     RecognizeRequest request;
-    *request.mutable_initial_request() = initial;
+    *request.mutable_config() = config;
     bool ok = stream_->Write(request);
     if (!ok)
     {
@@ -98,14 +97,11 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
 
 void RemoteSession::sendSamples(const std::vector<short> & data)
 {
-    AudioRequest audio;
     std::string content(data.size() * sizeof(short), 0);
     std::memcpy( (char*)content.data(), data.data(), content.size());
-    audio.set_content(content);
-    audio.set_end_of_stream(false);
     
     RecognizeRequest request;
-    *request.mutable_audio_request() = audio;
+    request.set_audio_content(content);
     bool ok = stream_->Write(request);
     if (!ok)
     {
@@ -120,20 +116,12 @@ void RemoteSession::EndOfStream()
         throw std::runtime_error("Stream closed");
     }
 	
-    AudioRequest audio;
-    audio.set_end_of_stream(true);
-    RecognizeRequest request;
-    *request.mutable_audio_request() = audio;
-    bool ok = stream_->Write(request);
-    if (!ok)
+    //closing stream
+    if (not stream_->WritesDone())
     {
         throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
     }
-	
-    //closing stream
-    stream_->WritesDone();
     samplesStreamCompleted_ = true;
-
 }
 
 RecognizeResponse RemoteSession::WaitForResponse(void)
@@ -159,4 +147,4 @@ RecognizeResponse RemoteSession::WaitForResponse(void)
     return response;
 }
 
-}
+}}

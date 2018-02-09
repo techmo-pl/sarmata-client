@@ -1,12 +1,12 @@
 #ifndef LIBSARMATA_REMOTE_SESSION_H
 #define LIBSARMATA_REMOTE_SESSION_H
 
-#include "asr_service.grpc.pb.h"
+#include "sarmata_asr.grpc.pb.h"
 
 #include "ASRSession.h"
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
+
     class RemoteSession: public IASRSession
     {
     public:
@@ -32,6 +32,6 @@ namespace sarmata
 		bool samplesStreamCompleted_;
     };
 
-}
+}}
 
 #endif

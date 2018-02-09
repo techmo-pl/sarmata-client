@@ -1,9 +1,9 @@
 
 
-#include "asr_service.pb.h"
+#include "sarmata_asr.pb.h"
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
+
     std::ostream & operator<<(std::ostream & stream, ResponseStatus status)
     {
         switch (status)
@@ -24,5 +24,6 @@ namespace sarmata
             default                          : stream << "EVENT(" << static_cast<int>(status) << ")"; break;
         }
         return stream;
-    }    
-}
+    }
+
+}}

@@ -122,13 +122,13 @@ message RecognizeResponse {
   int32 event_time = 4;
   
   // List of recognized phrases ordered by probability.
-  repeated Phrase results = 5;
+  repeated RecognizedPhrase results = 5;
 }
 
 // A single phrase recognition result.
-message Phrase {
+message RecognizedPhrase {
   // A single word recognition result.
-  message Word {
+  message RecognizedWord {
     // Recognized word transcription.
     string transcript = 1;
     
@@ -146,7 +146,7 @@ message Phrase {
   }
   
   // Words in recognized phrase.
-  repeated Word words = 1;
+  repeated RecognizedWord words = 1;
   
   // Confidence of phrase recognition.
   double confidence = 2;

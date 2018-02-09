@@ -18,4 +18,4 @@ ${PROTOC}   -I${path_i} \
             ${PLUGIN} \
             --cpp_out=${path_o} \
             --grpc_out=${path_o} \
-            ${path_i}/asr_service.proto
+            ${path_i}/sarmata_asr.proto

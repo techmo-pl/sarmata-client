@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 
-#include "asr_service.pb.h"
+#include "sarmata_asr.pb.h"
 
 using ASRSessionSettings = std::map<std::string, std::string>;
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
+
     class IASRSession
     {
     public:
@@ -28,6 +28,6 @@ namespace sarmata
 
     };
 
-}
+}}
 
 #endif

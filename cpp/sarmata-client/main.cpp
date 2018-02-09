@@ -10,7 +10,7 @@
 #include <grpc++/create_channel.h>
 #include <grpc++/security/credentials.h>
 
-#include "libsarmata-client/asr_service.grpc.pb.h"
+#include "libsarmata-client/sarmata_asr.grpc.pb.h"
 #include "libsarmata-client/RemoteSession.h"
 #include "libsarmata-client/ASRSessionUtils.h"
 
@@ -26,7 +26,7 @@ int main(int ac, char* av[])
     using grpc::ClientContext;
     using grpc::Status;
     using grpc::ClientReaderWriter;
-    using namespace sarmata;
+    using namespace techmo::sarmata;
 
     if (ac < 4)
     {
@@ -61,7 +61,7 @@ int main(int ac, char* av[])
         }
         if (response.results().size())
         {
-            auto showPath = [](const Phrase & path)
+            auto showPath = [](const RecognizedPhrase & path)
             {
                 using namespace std;
                 int w = 0, gp = 0, gs = 0;
