@@ -54,14 +54,27 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
     samplesStreamCompleted_ = false;
     
     RecognitionConfig config;
-    for (const auto & field : settings)
+    for (const auto & field : settings.config)
     {
         auto * configField = config.add_config();
         configField->set_key(field.first);
         configField->set_value(field.second);
     }
+    config.set_token(token);
+    config.set_sample_rate_hertz(settings.sampleRateHertz);
+    config.set_max_alternatives(settings.maxAlternatives);
+    if (not settings.grammarName.empty())
+    {
+        config.set_name(settings.grammarName);
+    }
+    else
+    {
+        config.set_data(settings.grammarData);
+    }
+
     RecognizeRequest request;
     *request.mutable_config() = config;
+
     bool ok = stream_->Write(request);
     if (!ok)
     {

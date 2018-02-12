@@ -13,12 +13,13 @@
 #include "libsarmata-client/sarmata_asr.grpc.pb.h"
 #include "libsarmata-client/RemoteSession.h"
 #include "libsarmata-client/ASRSessionUtils.h"
+#include "wave-utils.h"
 
 std::vector<short> loadWave(const std::string & path);
 
 std::string fileContent(const std::string & path);
 
-ASRSessionSettings loadSettings(const std::string & path);
+std::map<std::string, std::string> loadSettings(const std::string & path);
 
 int main(int ac, char* av[])
 {
@@ -36,20 +37,26 @@ int main(int ac, char* av[])
     }
 
     RemoteSession session(av[1]);
-    auto data = loadWave(av[2]);
+
+    auto wave = ReadWaveFile(av[2]);
+    std::vector<short> waveSamples(wave.audioBytes.size() / sizeof(short), 0);
+    std::memcpy((char*)waveSamples.data(), wave.audioBytes.data(), waveSamples.size());
+
     auto grammar = fileContent(av[3]);
+
     ASRSessionSettings settings;
     if (ac == 5)
     {
-        settings = loadSettings(av[4]);
+        settings.config = loadSettings(av[4]);
     }
+    settings.sampleRateHertz = wave.header.samplesPerSec;
     constexpr auto grammar_name = "pre-defined-grammar";
-    settings["grammar-name"] = grammar_name;
+    settings.grammarName = grammar_name;
     
     session.PreDefineGrammar(grammar_name, grammar);
 
     session.Open("", settings);
-    session.AddSamples(data);
+    session.AddSamples(waveSamples);
     session.EndOfStream();
     
     RecognizeResponse response;
@@ -86,31 +93,6 @@ int main(int ac, char* av[])
     
 }
 
-std::vector<short> loadWave(const std::string & path)
-{
-    struct WAV_HEADER
-    {
-        char               RIFF[4];        // RIFF Header      Magic header
-        unsigned int       ChunkSize;      // RIFF Chunk Size  
-        char               WAVE[4];        // WAVE Header      
-        char               fmt[4];         // FMT header       
-        unsigned int       Subchunk1Size;  // Size of the fmt chunk                                
-        unsigned short     AudioFormat;    // Audio format 1=PCM,6=mulaw,7=alaw, 257=IBM Mu-Law, 258=IBM A-Law, 259=ADPCM 
-        unsigned short     NumOfChan;      // Number of channels 1=Mono 2=Sterio                   
-        unsigned int       SamplesPerSec;  // Sampling Frequency in Hz                             
-        unsigned int       bytesPerSec;    // bytes per second 
-        unsigned short     blockAlign;     // 2=16-bit mono, 4=16-bit stereo 
-        unsigned short     bitsPerSample;  // Number of bits per sample      
-        char               Subchunk2ID[4]; // "data"  string   
-        unsigned int       Subchunk2Size;  // Sampled data length    
-    } header;
-    std::ifstream file(path, std::ios::binary);
-    file.read((char*)&header, sizeof(header));
-    std::vector<short> data(header.Subchunk2Size/sizeof(short));
-    file.read((char*)data.data(), header.Subchunk2Size);
-    return data;
-}
-
 std::string fileContent(const std::string & path)
 {
     std::ifstream t(path);
@@ -119,9 +101,9 @@ std::string fileContent(const std::string & path)
     return buffer.str();
 }
 
-ASRSessionSettings loadSettings(const std::string & path)
+std::map<std::string, std::string> loadSettings(const std::string & path)
 {
-    ASRSessionSettings settings;
+    std::map<std::string, std::string> settings;
     std::ifstream file(path);
     std::string line;
     std::cout << "Additional options: " << std::endl;
@@ -140,6 +122,3 @@ ASRSessionSettings loadSettings(const std::string & path)
     }
     return settings;
 }
-
-
-

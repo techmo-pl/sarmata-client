@@ -7,7 +7,14 @@
 
 #include "sarmata_asr.pb.h"
 
-using ASRSessionSettings = std::map<std::string, std::string>;
+struct ASRSessionSettings
+{
+    std::map<std::string, std::string> config;
+    unsigned int sampleRateHertz = 0;
+    unsigned int maxAlternatives = 1;
+    std::string grammarName;
+    std::string grammarData;
+};
 
 namespace techmo { namespace sarmata {
 
