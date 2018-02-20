@@ -4,7 +4,7 @@
 from argparse import ArgumentParser
 from service.sarmata_settings import SarmataSettings
 from service.sarmata_recognize import SarmataRecognizer
-from service.asr_service_pb2 import ResponseStatus, EMPTY, START_OF_INPUT
+from service.sarmata_asr_pb2 import ResponseStatus, EMPTY, START_OF_INPUT
 from utils.audio_source import AudioStream
 from utils.mic_source import MicrophoneStream
 import sys

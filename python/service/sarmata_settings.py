@@ -57,15 +57,11 @@ class SarmataSettings:
             raise ValueError("Grammar must be loaded or grammar name must be set first")
 
         settings_map = {
-            "nbest": str(self.nbest),
             "no-match-th": str(self.no_match),
             "no-input-timeout": str(self.no_input_timeout),
             "no-rec-timeout": str(self.no_recognition_timeout),
             "complete-timeout": str(self.speech_complete),
-            "incomplete-timeout": str(self.speech_incomplete),
-            "session_id": self.session_id,
-            "grammar_data": self.grammar, # can be empty if grammar_name is not empty
-            "grammar-name": self.grammar_name # can be empty if grammar is not empty
+            "incomplete-timeout": str(self.speech_incomplete)
         }
 
         return settings_map
