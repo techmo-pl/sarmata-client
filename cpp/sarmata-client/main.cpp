@@ -40,7 +40,7 @@ int main(int ac, char* av[])
 
     auto wave = ReadWaveFile(av[2]);
     std::vector<short> waveSamples(wave.audioBytes.size() / sizeof(short), 0);
-    std::memcpy((char*)waveSamples.data(), wave.audioBytes.data(), waveSamples.size());
+    std::memcpy((char*)waveSamples.data(), wave.audioBytes.data(), wave.audioBytes.size());
 
     auto grammar = fileContent(av[3]);
 
@@ -52,8 +52,15 @@ int main(int ac, char* av[])
     settings.sampleRateHertz = wave.header.samplesPerSec;
     constexpr auto grammar_name = "pre-defined-grammar";
     settings.grammarName = grammar_name;
-    
-    session.PreDefineGrammar(grammar_name, grammar);
+
+    try
+    {
+        session.PreDefineGrammar(grammar_name, grammar);
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 
     session.Open("", settings);
     session.AddSamples(waveSamples);

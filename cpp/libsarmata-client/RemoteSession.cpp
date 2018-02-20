@@ -16,10 +16,10 @@ RemoteSession::~RemoteSession()
 {
     if (stream_)
     {
-		if(!samplesStreamCompleted_)
-		{
-			stream_->WritesDone();
-		}
+        if(!samplesStreamCompleted_)
+        {
+            stream_->WritesDone();
+        }
         stream_->Finish();
     }
 }
@@ -88,7 +88,7 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
     {
         throw std::runtime_error("Stream closed");
     }
-	
+
     const auto chunk_size = 3*1024*1024/sizeof(short);   // less then size in https://github.com/grpc/grpc/blob/v1.0.x/src/core/lib/surface/channel.c#L84
     std::vector<short> chunk;
     chunk.reserve(chunk_size);
@@ -128,7 +128,7 @@ void RemoteSession::EndOfStream()
     {
         throw std::runtime_error("Stream closed");
     }
-	
+
     //closing stream
     if (not stream_->WritesDone())
     {
