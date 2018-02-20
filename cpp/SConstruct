@@ -20,6 +20,7 @@ env.Append(
         grpc_root + 'include',
         grpc_root + 'third_party/protobuf/src',
         os.getcwd(),
+        os.getcwd() + '/libsarmata-client',
     ]
 )
 

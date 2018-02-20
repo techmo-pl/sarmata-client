@@ -14,6 +14,7 @@
 #include "libsarmata-client/RemoteSession.h"
 #include "libsarmata-client/ASRSessionUtils.h"
 #include "wave-utils.h"
+#include "VERSION.h"
 
 std::vector<short> loadWave(const std::string & path);
 
@@ -35,6 +36,8 @@ int main(int ac, char* av[])
         av[0] << " host-address audio.wav grammar.txt [options.txt]" << std::endl;
         return 1;
     }
+
+    std::cout << "Sarmata ASR gRPC client " << LIBSARMATA_CLIENT_VERSION << std::endl;
 
     RemoteSession session(av[1]);
 
