@@ -28,13 +28,6 @@ version: 2.0.0
 authors: Dawid Skurzok, Paweł Jaciów
 date:    2018-01-30
 
-Grammar persistence options:
-- per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
-- predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
-- auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
-
-Users account manipulation will be provided by another service.
-
 Some content is derived from:
 https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/cloud_speech.proto
 
@@ -43,6 +36,13 @@ https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/clou
 
 ### ASR
 Service that implements Techmo Automatic-Speech-Recognition (ASR) API.
+
+Grammar persistence options:
+- per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
+- predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
+- auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
+
+Users account manipulation will be provided by another service.
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
@@ -72,13 +72,16 @@ Provides a pair of configuration field name and value.
 
 ### DefineGrammarRequest
 The top-level message sent by the client for the `DefineGrammar` method.
+It will define grammar specified in `grammar` field for use in future recognitions
+under ID given by `name` field.
+When empty `grammar` is sent, the `name` grammar will be deleted from cache.
 
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| token | [string](#string) | Authorization token. |
-| name | [string](#string) | Grammar ID to store the grammar for future use with. |
-| grammar | [string](#string) | Grammar data to be stored for future use. |
+| token | [string](#string) | [*Optional*] Authorization token. |
+| name | [string](#string) | [*Required*] Grammar ID to store the grammar for future use with. |
+| grammar | [string](#string) | [*Optional*] Grammar data to be stored for future use. Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/). Empty (not set) requests deletion of the grammar cached with ID `name`. |
 
 
 
@@ -112,10 +115,10 @@ how to process the request.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| config | [ConfigField](#techmo.sarmata.ConfigField) | Optional* A means to provide additional configuration fields via request. |
-| token | [string](#string) | Optional* Authorization token. |
-| sample_rate_hertz | [int32](#int32) | Required* Sample rate in Hertz of the audio data sent in all `RecognizeRequest` messages. |
-| max_alternatives | [int32](#int32) | Optional* Maximum number of recognition hypotheses to be returned. Specifically, the maximum number of `Phrase` messages within each `RecognizeResponse`. The server may return fewer than `max_alternatives`. If omitted, will return a maximum of one. |
+| config | [ConfigField](#techmo.sarmata.ConfigField) | [*Optional*] A means to provide additional configuration fields via request. |
+| token | [string](#string) | [*Optional*] Authorization token. |
+| sample_rate_hertz | [int32](#int32) | [*Required*] Sample rate in Hertz of the audio data sent in all `RecognizeRequest` messages. |
+| max_alternatives | [int32](#int32) | [*Optional*] Maximum number of recognition hypotheses to be returned. Specifically, the maximum number of `Phrase` messages within each `RecognizeResponse`. The server may return fewer than `max_alternatives`. If omitted, will return a maximum of one. |
 | name | [string](#string) | Grammar ID of a stored grammar to use for the recognition. |
 | data | [string](#string) | Grammar data to use for the recognition. |
 
