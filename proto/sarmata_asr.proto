@@ -1,7 +1,7 @@
 // Techmo Sarmata ASR API
 // version: 2.0.0
 // authors: Dawid Skurzok, Paweł Jaciów
-// date:    2018-01-30
+// date:    2018-02-26
 //
 // Some content is derived from:
 // https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/cloud_speech.proto
@@ -16,7 +16,7 @@ package techmo.sarmata;
 // - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
 // - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
 //
-// Users account manipulation will be provided by another service.
+// Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/).
 service ASR {
   // Performs bidirectional streaming speech recognition using given grammar.
   // Receive results while sending audio.
@@ -49,16 +49,20 @@ message RecognizeRequest {
 // Provides information to the recognizer that specifies
 // how to process the request.
 message RecognitionConfig {
-  // [*Optional*] A means to provide additional configuration fields via request.
-  repeated ConfigField config = 1;
-  
-  // [*Optional*] Authorization token.
-  string token = 2;
+  // [*Required*] grammar, which is either just a name of a grammar stored earlier with
+  // `DefineGrammar` method or a full grammar data.
+  oneof grammar {
+    // ID of a stored grammar to use for the recognition.
+    string grammar_name = 1;
 
-  // [*Required*] Sample rate in Hertz of the audio data sent in all
+    // Grammar data to use for the recognition.
+    // Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/).
+    string grammar_data = 2;
+  }
+
+  // [*Required*] Sample rate in hertz of the audio data sent in all
   // `RecognizeRequest` messages.
   int32 sample_rate_hertz = 3;
-
 
   // [*Optional*] Maximum number of recognition hypotheses to be returned.
   // Specifically, the maximum number of `Phrase` messages
@@ -67,15 +71,57 @@ message RecognitionConfig {
   // If omitted, will return a maximum of one.
   int32 max_alternatives = 4;
 
-  // [*Required*] grammar, which is either just a name of a grammar stored earlier with
-  // `DefineGrammar` method or a full grammar data.
-  oneof grammar {
-    // Grammar ID of a stored grammar to use for the recognition.
-    string name = 5;
+  // [*Optional*] Confidence threshold to decide if phrase is correct.
+  // Results with score below the threshold are considered no match.
+  double no_match_threshold = 5;
 
-    // Grammar data to use for the recognition.
-    string data = 6;
-  }
+  // [*Optional*] MRCPv2-related timeout settings.
+  // Recognition will be interrupted when any of the timeouts is met.
+  TimeoutSettings timeout_settings = 6;
+
+  // [*Optional*] A means to provide additional configuration via request.
+  repeated ConfigField additional_settings = 7;
+}
+
+// MRCPv2-related timeout settings. The values are in milliseconds.
+message TimeoutSettings {
+  // [*Optional*] [No-Input-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.6)
+  // When recognition is started and there is no speech detected for
+  // a certain period of time, the recognizer can send a RECOGNITION-
+  // COMPLETE event to the client with a Completion-Cause of "no-input-
+  // timeout" and terminate the recognition operation.
+  int32 no_input_timeout = 1;
+
+  // [*Optional*] [Recognition-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.7)
+  // When recognition is started and there is no match for a certain
+  // period of time, the recognizer can send a RECOGNITION-COMPLETE event
+  // to the client and terminate the recognition operation.
+  int32 recognition_timeout = 2;
+
+  // [*Optional*] [Speech-Complete-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.15)
+  // Specifies the length of silence required following
+  // user speech before the speech recognizer finalizes a result (either
+  // accepting it or generating a no-match result). The Speech-Complete-
+  // Timeout value applies when the recognizer currently has a complete
+  // match against an active grammar, and specifies how long
+  // the recognizer MUST wait for more input before declaring a match. By
+  // contrast, the Speech-Incomplete-Timeout is used when the speech is
+  // an incomplete match to an active grammar.
+  // A long Speech-Complete-Timeout value delays the result to the client
+  // and therefore makes the application's response to a user slow.
+  // A short Speech-Complete-Timeout may lead to an utterance being broken
+  // up inappropriately. Reasonable speech complete timeout values are
+  // typically in the range of 300 milliseconds to 1000 milliseconds.
+  int32 speech_complete_timeout = 3;
+
+  // [*Optional*] [Speech-Incomplete-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.16)
+  // Specifies the required length of silence following
+  // user speech after which a recognizer finalizes a result.
+  // The incomplete timeout applies when the speech prior to the silence
+  // is an incomplete match of all active grammars. In this case, once the
+  // timeout is triggered, the partial result is rejected (with
+  // a Completion-Cause of "partial-match").
+  int32 speech_incomplete_timeout = 4;
 }
 
 // Provides a pair of configuration field name and value.
@@ -111,17 +157,16 @@ message RecognizeResponse {
   // Status and type of message.
   ResponseStatus status = 1;
 
-  // Critical error message.
+  // Error message. If set, specifies the error for the operation.
+  // Client should check if any response received from the service
+  // contains this field and stop sending audio data when it does.
   string error = 2;
-  
-  // Minor error message, e.g. error in transcription.
-  string warning = 3;
 
   // Time of event (if applicable).
-  int32 event_time = 4;
+  int32 event_time = 3;
   
   // List of recognized phrases ordered by probability.
-  repeated RecognizedPhrase results = 5;
+  repeated RecognizedPhrase results = 4;
 }
 
 // A single phrase recognition result.
@@ -158,20 +203,17 @@ message RecognizedPhrase {
 }
 
 // The top-level message sent by the client for the `DefineGrammar` method.
-// It will define grammar specified in `grammar` field for use in future recognitions
-// under ID given by `name` field.
-// When empty `grammar` is sent, the `name` grammar will be deleted from cache.
+// It will define grammar specified in `grammar_data` field for use in future recognitions
+// under ID given by `grammar_name` field.
+// When empty `grammar_data` is sent, the `grammar_name` grammar will be deleted from cache.
 message DefineGrammarRequest {
-  // [*Optional*] Authorization token.
-  string token   = 1;
-
   // [*Required*] Grammar ID to store the grammar for future use with.
-  string name    = 2;
+  string grammar_name = 1;
 
   // [*Optional*] Grammar data to be stored for future use.
   // Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/).
-  // Empty (not set) requests deletion of the grammar cached with ID `name`.
-  string grammar = 3;
+  // Empty (not set) requests deletion of the grammar cached with ID `grammar_name`.
+  string grammar_data = 2;
 }
 
 // The only message returned to the client by the `DefineGrammar` method. It
