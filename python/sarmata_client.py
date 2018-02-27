@@ -69,7 +69,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description="""Main script for running tests of Techmo Sarmata ASR system""")
     parser.add_argument("--address", help="Techmo Sarmata ASR service", required=True)
     parser.add_argument("--define-grammar", help="Defines a new grammar to be cached by the service under ID "
-                                                 "given by `--grammar-id` option from data given by `--grammar` option",
+                                                 "given by `--grammar-name` option from data given by `--grammar` option",
                         action='store_true')
     parser.add_argument("--grammar-name", help="Name (ID) of the grammar in the service's grammar cache", default='',
                         type=str)

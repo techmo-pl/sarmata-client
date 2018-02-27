@@ -16,7 +16,7 @@ package techmo.sarmata;
 // - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
 // - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
 //
-// Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/).
+// Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
 service ASR {
   // Performs bidirectional streaming speech recognition using given grammar.
   // Receive results while sending audio.
@@ -56,7 +56,7 @@ message RecognitionConfig {
     string grammar_name = 1;
 
     // Grammar data to use for the recognition.
-    // Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/).
+    // Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
     string grammar_data = 2;
   }
 
@@ -140,8 +140,8 @@ enum ResponseStatus {
   PARTIAL_MATCH = 2;               // Recognized only beginning of the utterence.
   NO_MATCH = 3;                    // No pharse recognized.
   NO_INPUT_TIMEOUT = 4;            // No spech or no match in expected time.
-  GRAMMAR_LOAD_FAILURE = 5;        // Grammar connot be loaded. Details in `error` field.
-  GRAMMAR_COMPILATION_FAILURE = 6; // Grammar compilation error. Details in `error` field.
+  GRAMMAR_LOAD_FAILURE = 5;        // Grammar connot be loaded.
+  GRAMMAR_COMPILATION_FAILURE = 6; // Grammar compilation error.
   RECOGNIZER_ERROR = 7;            // Iternal error.
   TOO_MUCH_SPEECH_TIMEOUT = 8;     // Speech to long.
   CANCELLED = 9;                   // Recognition cancelled.
@@ -154,12 +154,19 @@ enum ResponseStatus {
 // `Recognize`. A series of one or more `RecognizeResponse`
 // messages are streamed back to the client.
 message RecognizeResponse {
-  // Status and type of message.
+  // Status and type of the message.
+  // Client should check statuses of received responses and
+  // stop sending audio data when received any of the following ones:
+  // - GRAMMAR_LOAD_FAILURE,
+  // - GRAMMAR_COMPILATION_FAILURE,
+  // - RECOGNIZER_ERROR,
+  // - SEMANTICS_FAILURE,
+  // which means that the service encountered an error (details in
+  // `error` field) and stopped processing incoming audio.
   ResponseStatus status = 1;
 
-  // Error message. If set, specifies the error for the operation.
-  // Client should check if any response received from the service
-  // contains this field and stop sending audio data when it does.
+  // Status-specific error message. Is set only for statuses
+  // listed in `status` field's description as meaning errors.
   string error = 2;
 
   // Time of event (if applicable).
@@ -211,7 +218,7 @@ message DefineGrammarRequest {
   string grammar_name = 1;
 
   // [*Optional*] Grammar data to be stored for future use.
-  // Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/).
+  // Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
   // Empty (not set) requests deletion of the grammar cached with ID `grammar_name`.
   string grammar_data = 2;
 }
@@ -222,7 +229,7 @@ message DefineGrammarResponse {
   // Status and type of message.
   ResponseStatus status = 1;
 
-  // Error message.
+  // Error message. Set only when an error occurred.
   string error = 2;
 
   // True if grammar was created.
