@@ -27,8 +27,8 @@ RemoteSession::~RemoteSession()
 void RemoteSession::PreDefineGrammar(const std::string & grammarName, const std::string & grammarData)
 {
     DefineGrammarRequest request;
-    request.set_name(grammarName);
-    request.set_grammar(grammarData);
+    request.set_grammar_name(grammarName);
+    request.set_grammar_data(grammarData);
 
     DefineGrammarResponse response;
 
@@ -56,20 +56,20 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
     RecognitionConfig config;
     for (const auto & field : settings.config)
     {
-        auto * configField = config.add_config();
+        auto * configField = config.add_additional_settings();
         configField->set_key(field.first);
         configField->set_value(field.second);
     }
-    config.set_token(token);
+    //config.set_token(token);//TODO: what about that?
     config.set_sample_rate_hertz(settings.sampleRateHertz);
     config.set_max_alternatives(settings.maxAlternatives);
     if (not settings.grammarName.empty())
     {
-        config.set_name(settings.grammarName);
+        config.set_grammar_name(settings.grammarName);
     }
     else
     {
-        config.set_data(settings.grammarData);
+        config.set_grammar_data(settings.grammarData);
     }
 
     RecognizeRequest request;

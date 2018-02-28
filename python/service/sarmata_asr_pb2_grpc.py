@@ -5,7 +5,14 @@ from . import sarmata_asr_pb2 as sarmata__asr__pb2
 
 
 class ASRStub(object):
-  """Service that implements Techmo ASR API.
+  """Service that implements Techmo Automatic-Speech-Recognition (ASR) API.
+
+  Grammar persistence options:
+  - per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
+  - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
+  - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
+
+  Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
   """
 
   def __init__(self, channel):
@@ -27,7 +34,14 @@ class ASRStub(object):
 
 
 class ASRServicer(object):
-  """Service that implements Techmo ASR API.
+  """Service that implements Techmo Automatic-Speech-Recognition (ASR) API.
+
+  Grammar persistence options:
+  - per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
+  - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
+  - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
+
+  Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
   """
 
   def Recognize(self, request_iterator, context):

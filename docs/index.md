@@ -13,6 +13,7 @@
     - [RecognizeResponse](#techmo.sarmata.RecognizeResponse)
     - [RecognizedPhrase](#techmo.sarmata.RecognizedPhrase)
     - [RecognizedPhrase.RecognizedWord](#techmo.sarmata.RecognizedPhrase.RecognizedWord)
+    - [TimeoutSettings](#techmo.sarmata.TimeoutSettings)
     - [ResponseStatus](#techmo.sarmata.ResponseStatus)
   
 - [Scalar Value Types](#scalar-value-types)
@@ -26,7 +27,7 @@
 Techmo Sarmata ASR API
 version: 2.0.0
 authors: Dawid Skurzok, Paweł Jaciów
-date:    2018-01-30
+date:    2018-02-26
 
 Some content is derived from:
 https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/cloud_speech.proto
@@ -42,7 +43,7 @@ Grammar persistence options:
 - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
 - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
 
-Users account manipulation will be provided by another service.
+Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
@@ -72,16 +73,15 @@ Provides a pair of configuration field name and value.
 
 ### DefineGrammarRequest
 The top-level message sent by the client for the `DefineGrammar` method.
-It will define grammar specified in `grammar` field for use in future recognitions
-under ID given by `name` field.
-When empty `grammar` is sent, the `name` grammar will be deleted from cache.
+It will define grammar specified in `grammar_data` field for use in future recognitions
+under ID given by `grammar_name` field.
+When empty `grammar_data` is sent, the `grammar_name` grammar will be deleted from cache.
 
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| token | [string](#string) | [*Optional*] Authorization token. |
-| name | [string](#string) | [*Required*] Grammar ID to store the grammar for future use with. |
-| grammar | [string](#string) | [*Optional*] Grammar data to be stored for future use. Supported grammar formats are XML and ABNF as specified by [W3C](https://www.w3.org/TR/speech-grammar/). Empty (not set) requests deletion of the grammar cached with ID `name`. |
+| grammar_name | [string](#string) | [*Required*] Grammar ID to store the grammar for future use with. |
+| grammar_data | [string](#string) | [*Optional*] Grammar data to be stored for future use. Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/). Empty (not set) requests deletion of the grammar cached with ID `grammar_name`. |
 
 
 
@@ -98,7 +98,7 @@ contains a grammar creation confirmation or an error message.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | status | [ResponseStatus](#techmo.sarmata.ResponseStatus) | Status and type of message. |
-| error | [string](#string) | Error message. |
+| error | [string](#string) | Error message. Set only when an error occurred. |
 | ok | [bool](#bool) | True if grammar was created. |
 
 
@@ -112,15 +112,35 @@ contains a grammar creation confirmation or an error message.
 Provides information to the recognizer that specifies
 how to process the request.
 
+Additional configuration can be set via `additional_settings` field.
+The following parameters are allowed to be set that way:
+| Parameter | Type | Default value | Description |
+| --------- |:----:|:-------------:| ----------- |
+| *beam-width* | `int` | 20 | With of the beam in log prob. |
+| *speech-start* | `int` | 200 | Time of continuous speech before speech start event is passed [ms]. |
+| *order-by-confidence* | `bool` | false | Order phrases by confidence instead of likelihood. |
+| *keep-sil* | `bool` | false | Keep silence path even if it should be pruned or does not match grammar. |
+| *enable-incomplete-match* | `bool` | true | Enable incomplete match. |
+| *enable-incomplete-match-parse* | `bool` | false | Enable incomplete match. |
+| *garbage-beam* | `int` | 5 | Beam on garbage model. |
+| *show-sil* | `bool` | false | Show silence in recognitions. |
+| *show-garbage* | `bool` | false | Show garbage in recognitions. |
+| *flush-if-no-rec* | `bool` | true | Force recognition on end of stream. |
+| *enable-garbage* | `bool` | false | Enable garbage model. |
+| *use-vad* | `bool` | false | Use Voice Activity Detector. |
+| *vad-sil-ll* | `double` | 1.0 | Likelihood assigned to silent frames by VAD. |
+| *vad-nonsil-ll* | `double` | 0.0 | Likelihood assigned to non-silent frames by VAD. |
+
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| config | [ConfigField](#techmo.sarmata.ConfigField) | [*Optional*] A means to provide additional configuration fields via request. |
-| token | [string](#string) | [*Optional*] Authorization token. |
-| sample_rate_hertz | [int32](#int32) | [*Required*] Sample rate in Hertz of the audio data sent in all `RecognizeRequest` messages. |
+| grammar_name | [string](#string) | ID of a stored grammar to use for the recognition. |
+| grammar_data | [string](#string) | Grammar data to use for the recognition. Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/). |
+| sample_rate_hertz | [int32](#int32) | [*Required*] Sample rate in hertz of the audio data sent in all `RecognizeRequest` messages. |
 | max_alternatives | [int32](#int32) | [*Optional*] Maximum number of recognition hypotheses to be returned. Specifically, the maximum number of `Phrase` messages within each `RecognizeResponse`. The server may return fewer than `max_alternatives`. If omitted, will return a maximum of one. |
-| name | [string](#string) | Grammar ID of a stored grammar to use for the recognition. |
-| data | [string](#string) | Grammar data to use for the recognition. |
+| no_match_threshold | [double](#double) | [*Optional*] Confidence threshold to decide if phrase is correct. Results with score below the threshold are considered no match. |
+| timeout_settings | [TimeoutSettings](#techmo.sarmata.TimeoutSettings) | [*Optional*] MRCPv2-related timeout settings. Recognition will be interrupted when any of the timeouts is met. |
+| additional_settings | [ConfigField](#techmo.sarmata.ConfigField) | [*Optional*] A means to provide additional configuration via request. |
 
 
 
@@ -157,9 +177,8 @@ messages are streamed back to the client.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| status | [ResponseStatus](#techmo.sarmata.ResponseStatus) | Status and type of message. |
-| error | [string](#string) | Critical error message. |
-| warning | [string](#string) | Minor error message, e.g. error in transcription. |
+| status | [ResponseStatus](#techmo.sarmata.ResponseStatus) | Status and type of the message. Client should check statuses of received responses and stop sending audio data when received any of the following ones: - GRAMMAR_LOAD_FAILURE, - GRAMMAR_COMPILATION_FAILURE, - RECOGNIZER_ERROR, - SEMANTICS_FAILURE, which means that the service encountered an error (details in `error` field) and stopped processing incoming audio. |
+| error | [string](#string) | Status-specific error message. Is set only for statuses listed in `status` field's description as meaning errors. |
 | event_time | [int32](#int32) | Time of event (if applicable). |
 | results | [RecognizedPhrase](#techmo.sarmata.RecognizedPhrase) | List of recognized phrases ordered by probability. |
 
@@ -204,6 +223,24 @@ A single word recognition result.
 
 
 
+
+<a name="techmo.sarmata.TimeoutSettings"/>
+
+### TimeoutSettings
+MRCPv2-related timeout settings. The values are in milliseconds.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| no_input_timeout | [int32](#int32) | [*Optional*] [No-Input-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.6) When recognition is started and there is no speech detected for a certain period of time, the recognizer can send a RECOGNITION- COMPLETE event to the client with a Completion-Cause of "no-input- timeout" and terminate the recognition operation. |
+| recognition_timeout | [int32](#int32) | [*Optional*] [Recognition-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.7) When recognition is started and there is no match for a certain period of time, the recognizer can send a RECOGNITION-COMPLETE event to the client and terminate the recognition operation. |
+| speech_complete_timeout | [int32](#int32) | [*Optional*] [Speech-Complete-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.15) Specifies the length of silence required following user speech before the speech recognizer finalizes a result (either accepting it or generating a no-match result). The Speech-Complete- Timeout value applies when the recognizer currently has a complete match against an active grammar, and specifies how long the recognizer MUST wait for more input before declaring a match. By contrast, the Speech-Incomplete-Timeout is used when the speech is an incomplete match to an active grammar. A long Speech-Complete-Timeout value delays the result to the client and therefore makes the application's response to a user slow. A short Speech-Complete-Timeout may lead to an utterance being broken up inappropriately. Reasonable speech complete timeout values are typically in the range of 300 milliseconds to 1000 milliseconds. |
+| speech_incomplete_timeout | [int32](#int32) | [*Optional*] [Speech-Incomplete-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.16) Specifies the required length of silence following user speech after which a recognizer finalizes a result. The incomplete timeout applies when the speech prior to the silence is an incomplete match of all active grammars. In this case, once the timeout is triggered, the partial result is rejected (with a Completion-Cause of "partial-match"). |
+
+
+
+
+
  <!-- end messages -->
 
 
@@ -219,8 +256,8 @@ Indicates the status and type of message.
 | PARTIAL_MATCH | 2 | Recognized only beginning of the utterence. |
 | NO_MATCH | 3 | No pharse recognized. |
 | NO_INPUT_TIMEOUT | 4 | No spech or no match in expected time. |
-| GRAMMAR_LOAD_FAILURE | 5 | Grammar connot be loaded. Details in `error` field. |
-| GRAMMAR_COMPILATION_FAILURE | 6 | Grammar compilation error. Details in `error` field. |
+| GRAMMAR_LOAD_FAILURE | 5 | Grammar connot be loaded. |
+| GRAMMAR_COMPILATION_FAILURE | 6 | Grammar compilation error. |
 | RECOGNIZER_ERROR | 7 | Iternal error. |
 | TOO_MUCH_SPEECH_TIMEOUT | 8 | Speech to long. |
 | CANCELLED | 9 | Recognition cancelled. |

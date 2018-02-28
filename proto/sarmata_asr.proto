@@ -48,6 +48,25 @@ message RecognizeRequest {
 
 // Provides information to the recognizer that specifies
 // how to process the request.
+//
+// Additional configuration can be set via `additional_settings` field.
+// The following parameters are allowed to be set that way:
+// | Parameter | Type | Default value | Description |
+// | --------- |:----:|:-------------:| ----------- |
+// | *beam-width* | `int` | 20 | With of the beam in log prob. |
+// | *speech-start* | `int` | 200 | Time of continuous speech before speech start event is passed [ms]. |
+// | *order-by-confidence* | `bool` | false | Order phrases by confidence instead of likelihood. |
+// | *keep-sil* | `bool` | false | Keep silence path even if it should be pruned or does not match grammar. |
+// | *enable-incomplete-match* | `bool` | true | Enable incomplete match. |
+// | *enable-incomplete-match-parse* | `bool` | false | Enable incomplete match. |
+// | *garbage-beam* | `int` | 5 | Beam on garbage model. |
+// | *show-sil* | `bool` | false | Show silence in recognitions. |
+// | *show-garbage* | `bool` | false | Show garbage in recognitions. |
+// | *flush-if-no-rec* | `bool` | true | Force recognition on end of stream. |
+// | *enable-garbage* | `bool` | false | Enable garbage model. |
+// | *use-vad* | `bool` | false | Use Voice Activity Detector. |
+// | *vad-sil-ll* | `double` | 1.0 | Likelihood assigned to silent frames by VAD. |
+// | *vad-nonsil-ll* | `double` | 0.0 | Likelihood assigned to non-silent frames by VAD. |
 message RecognitionConfig {
   // [*Required*] grammar, which is either just a name of a grammar stored earlier with
   // `DefineGrammar` method or a full grammar data.

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='sarmata_asr.proto',
   package='techmo.sarmata',
   syntax='proto3',
-  serialized_pb=_b('\n\x11sarmata_asr.proto\x12\x0etechmo.sarmata\"k\n\x10RecognizeRequest\x12\x33\n\x06\x63onfig\x18\x01 \x01(\x0b\x32!.techmo.sarmata.RecognitionConfigH\x00\x12\x17\n\raudio_content\x18\x02 \x01(\x0cH\x00\x42\t\n\x07request\"\xaf\x01\n\x11RecognitionConfig\x12+\n\x06\x63onfig\x18\x01 \x03(\x0b\x32\x1b.techmo.sarmata.ConfigField\x12\r\n\x05token\x18\x02 \x01(\t\x12\x19\n\x11sample_rate_hertz\x18\x03 \x01(\x05\x12\x18\n\x10max_alternatives\x18\x04 \x01(\x05\x12\x0e\n\x04name\x18\x05 \x01(\tH\x00\x12\x0e\n\x04\x64\x61ta\x18\x06 \x01(\tH\x00\x42\t\n\x07grammar\")\n\x0b\x43onfigField\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\xaa\x01\n\x11RecognizeResponse\x12.\n\x06status\x18\x01 \x01(\x0e\x32\x1e.techmo.sarmata.ResponseStatus\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12\x0f\n\x07warning\x18\x03 \x01(\t\x12\x12\n\nevent_time\x18\x04 \x01(\x05\x12\x31\n\x07results\x18\x05 \x03(\x0b\x32 .techmo.sarmata.RecognizedPhrase\"\xff\x01\n\x10RecognizedPhrase\x12>\n\x05words\x18\x01 \x03(\x0b\x32/.techmo.sarmata.RecognizedPhrase.RecognizedWord\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\x0f\n\x07\x63orrect\x18\x03 \x01(\x08\x12\x1f\n\x17semantic_interpretation\x18\x04 \x01(\t\x1a\x65\n\x0eRecognizedWord\x12\x12\n\ntranscript\x18\x01 \x01(\t\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\r\n\x05start\x18\x03 \x01(\x05\x12\x0b\n\x03\x65nd\x18\x04 \x01(\x05\x12\x0f\n\x07logprob\x18\x05 \x01(\x01\"D\n\x14\x44\x65\x66ineGrammarRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07grammar\x18\x03 \x01(\t\"b\n\x15\x44\x65\x66ineGrammarResponse\x12.\n\x06status\x18\x01 \x01(\x0e\x32\x1e.techmo.sarmata.ResponseStatus\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12\n\n\x02ok\x18\x03 \x01(\x08*\x99\x02\n\x0eResponseStatus\x12\t\n\x05\x45MPTY\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\x11\n\rPARTIAL_MATCH\x10\x02\x12\x0c\n\x08NO_MATCH\x10\x03\x12\x14\n\x10NO_INPUT_TIMEOUT\x10\x04\x12\x18\n\x14GRAMMAR_LOAD_FAILURE\x10\x05\x12\x1f\n\x1bGRAMMAR_COMPILATION_FAILURE\x10\x06\x12\x14\n\x10RECOGNIZER_ERROR\x10\x07\x12\x1b\n\x17TOO_MUCH_SPEECH_TIMEOUT\x10\x08\x12\r\n\tCANCELLED\x10\t\x12\x12\n\x0eSTART_OF_INPUT\x10\n\x12\x10\n\x0c\x45ND_OF_AUDIO\x10\x0b\x12\x15\n\x11SEMANTICS_FAILURE\x10\x0c\x32\xb9\x01\n\x03\x41SR\x12T\n\tRecognize\x12 .techmo.sarmata.RecognizeRequest\x1a!.techmo.sarmata.RecognizeResponse(\x01\x30\x01\x12\\\n\rDefineGrammar\x12$.techmo.sarmata.DefineGrammarRequest\x1a%.techmo.sarmata.DefineGrammarResponseb\x06proto3')
+  serialized_pb=_b('\n\x11sarmata_asr.proto\x12\x0etechmo.sarmata\"k\n\x10RecognizeRequest\x12\x33\n\x06\x63onfig\x18\x01 \x01(\x0b\x32!.techmo.sarmata.RecognitionConfigH\x00\x12\x17\n\raudio_content\x18\x02 \x01(\x0cH\x00\x42\t\n\x07request\"\x94\x02\n\x11RecognitionConfig\x12\x16\n\x0cgrammar_name\x18\x01 \x01(\tH\x00\x12\x16\n\x0cgrammar_data\x18\x02 \x01(\tH\x00\x12\x19\n\x11sample_rate_hertz\x18\x03 \x01(\x05\x12\x18\n\x10max_alternatives\x18\x04 \x01(\x05\x12\x1a\n\x12no_match_threshold\x18\x05 \x01(\x01\x12\x39\n\x10timeout_settings\x18\x06 \x01(\x0b\x32\x1f.techmo.sarmata.TimeoutSettings\x12\x38\n\x13\x61\x64\x64itional_settings\x18\x07 \x03(\x0b\x32\x1b.techmo.sarmata.ConfigFieldB\t\n\x07grammar\"\x8c\x01\n\x0fTimeoutSettings\x12\x18\n\x10no_input_timeout\x18\x01 \x01(\x05\x12\x1b\n\x13recognition_timeout\x18\x02 \x01(\x05\x12\x1f\n\x17speech_complete_timeout\x18\x03 \x01(\x05\x12!\n\x19speech_incomplete_timeout\x18\x04 \x01(\x05\")\n\x0b\x43onfigField\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\x99\x01\n\x11RecognizeResponse\x12.\n\x06status\x18\x01 \x01(\x0e\x32\x1e.techmo.sarmata.ResponseStatus\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12\x12\n\nevent_time\x18\x03 \x01(\x05\x12\x31\n\x07results\x18\x04 \x03(\x0b\x32 .techmo.sarmata.RecognizedPhrase\"\xff\x01\n\x10RecognizedPhrase\x12>\n\x05words\x18\x01 \x03(\x0b\x32/.techmo.sarmata.RecognizedPhrase.RecognizedWord\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\x0f\n\x07\x63orrect\x18\x03 \x01(\x08\x12\x1f\n\x17semantic_interpretation\x18\x04 \x01(\t\x1a\x65\n\x0eRecognizedWord\x12\x12\n\ntranscript\x18\x01 \x01(\t\x12\x12\n\nconfidence\x18\x02 \x01(\x01\x12\r\n\x05start\x18\x03 \x01(\x05\x12\x0b\n\x03\x65nd\x18\x04 \x01(\x05\x12\x0f\n\x07logprob\x18\x05 \x01(\x01\"B\n\x14\x44\x65\x66ineGrammarRequest\x12\x14\n\x0cgrammar_name\x18\x01 \x01(\t\x12\x14\n\x0cgrammar_data\x18\x02 \x01(\t\"b\n\x15\x44\x65\x66ineGrammarResponse\x12.\n\x06status\x18\x01 \x01(\x0e\x32\x1e.techmo.sarmata.ResponseStatus\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x12\n\n\x02ok\x18\x03 \x01(\x08*\x99\x02\n\x0eResponseStatus\x12\t\n\x05\x45MPTY\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\x11\n\rPARTIAL_MATCH\x10\x02\x12\x0c\n\x08NO_MATCH\x10\x03\x12\x14\n\x10NO_INPUT_TIMEOUT\x10\x04\x12\x18\n\x14GRAMMAR_LOAD_FAILURE\x10\x05\x12\x1f\n\x1bGRAMMAR_COMPILATION_FAILURE\x10\x06\x12\x14\n\x10RECOGNIZER_ERROR\x10\x07\x12\x1b\n\x17TOO_MUCH_SPEECH_TIMEOUT\x10\x08\x12\r\n\tCANCELLED\x10\t\x12\x12\n\x0eSTART_OF_INPUT\x10\n\x12\x10\n\x0c\x45ND_OF_AUDIO\x10\x0b\x12\x15\n\x11SEMANTICS_FAILURE\x10\x0c\x32\xb9\x01\n\x03\x41SR\x12T\n\tRecognize\x12 .techmo.sarmata.RecognizeRequest\x1a!.techmo.sarmata.RecognizeResponse(\x01\x30\x01\x12\\\n\rDefineGrammar\x12$.techmo.sarmata.DefineGrammarRequest\x1a%.techmo.sarmata.DefineGrammarResponseb\x06proto3')
 )
 
 _RESPONSESTATUS = _descriptor.EnumDescriptor(
@@ -84,8 +84,8 @@ _RESPONSESTATUS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=969,
-  serialized_end=1250,
+  serialized_start=1194,
+  serialized_end=1475,
 )
 _sym_db.RegisterEnumDescriptor(_RESPONSESTATUS)
 
@@ -155,14 +155,14 @@ _RECOGNITIONCONFIG = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='config', full_name='techmo.sarmata.RecognitionConfig.config', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='grammar_name', full_name='techmo.sarmata.RecognitionConfig.grammar_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='token', full_name='techmo.sarmata.RecognitionConfig.token', index=1,
+      name='grammar_data', full_name='techmo.sarmata.RecognitionConfig.grammar_data', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -183,16 +183,23 @@ _RECOGNITIONCONFIG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='name', full_name='techmo.sarmata.RecognitionConfig.name', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='no_match_threshold', full_name='techmo.sarmata.RecognitionConfig.no_match_threshold', index=4,
+      number=5, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='data', full_name='techmo.sarmata.RecognitionConfig.data', index=5,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='timeout_settings', full_name='techmo.sarmata.RecognitionConfig.timeout_settings', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='additional_settings', full_name='techmo.sarmata.RecognitionConfig.additional_settings', index=6,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -212,7 +219,59 @@ _RECOGNITIONCONFIG = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=147,
-  serialized_end=322,
+  serialized_end=423,
+)
+
+
+_TIMEOUTSETTINGS = _descriptor.Descriptor(
+  name='TimeoutSettings',
+  full_name='techmo.sarmata.TimeoutSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='no_input_timeout', full_name='techmo.sarmata.TimeoutSettings.no_input_timeout', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='recognition_timeout', full_name='techmo.sarmata.TimeoutSettings.recognition_timeout', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='speech_complete_timeout', full_name='techmo.sarmata.TimeoutSettings.speech_complete_timeout', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='speech_incomplete_timeout', full_name='techmo.sarmata.TimeoutSettings.speech_incomplete_timeout', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=426,
+  serialized_end=566,
 )
 
 
@@ -249,8 +308,8 @@ _CONFIGFIELD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=324,
-  serialized_end=365,
+  serialized_start=568,
+  serialized_end=609,
 )
 
 
@@ -276,22 +335,15 @@ _RECOGNIZERESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='warning', full_name='techmo.sarmata.RecognizeResponse.warning', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='event_time', full_name='techmo.sarmata.RecognizeResponse.event_time', index=3,
-      number=4, type=5, cpp_type=1, label=1,
+      name='event_time', full_name='techmo.sarmata.RecognizeResponse.event_time', index=2,
+      number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='results', full_name='techmo.sarmata.RecognizeResponse.results', index=4,
-      number=5, type=11, cpp_type=10, label=3,
+      name='results', full_name='techmo.sarmata.RecognizeResponse.results', index=3,
+      number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -308,8 +360,8 @@ _RECOGNIZERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=368,
-  serialized_end=538,
+  serialized_start=612,
+  serialized_end=765,
 )
 
 
@@ -367,8 +419,8 @@ _RECOGNIZEDPHRASE_RECOGNIZEDWORD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=695,
-  serialized_end=796,
+  serialized_start=922,
+  serialized_end=1023,
 )
 
 _RECOGNIZEDPHRASE = _descriptor.Descriptor(
@@ -418,8 +470,8 @@ _RECOGNIZEDPHRASE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=541,
-  serialized_end=796,
+  serialized_start=768,
+  serialized_end=1023,
 )
 
 
@@ -431,22 +483,15 @@ _DEFINEGRAMMARREQUEST = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='token', full_name='techmo.sarmata.DefineGrammarRequest.token', index=0,
+      name='grammar_name', full_name='techmo.sarmata.DefineGrammarRequest.grammar_name', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='name', full_name='techmo.sarmata.DefineGrammarRequest.name', index=1,
+      name='grammar_data', full_name='techmo.sarmata.DefineGrammarRequest.grammar_data', index=1,
       number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='grammar', full_name='techmo.sarmata.DefineGrammarRequest.grammar', index=2,
-      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -463,8 +508,8 @@ _DEFINEGRAMMARREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=798,
-  serialized_end=866,
+  serialized_start=1025,
+  serialized_end=1091,
 )
 
 
@@ -508,8 +553,8 @@ _DEFINEGRAMMARRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=868,
-  serialized_end=966,
+  serialized_start=1093,
+  serialized_end=1191,
 )
 
 _RECOGNIZEREQUEST.fields_by_name['config'].message_type = _RECOGNITIONCONFIG
@@ -519,13 +564,14 @@ _RECOGNIZEREQUEST.fields_by_name['config'].containing_oneof = _RECOGNIZEREQUEST.
 _RECOGNIZEREQUEST.oneofs_by_name['request'].fields.append(
   _RECOGNIZEREQUEST.fields_by_name['audio_content'])
 _RECOGNIZEREQUEST.fields_by_name['audio_content'].containing_oneof = _RECOGNIZEREQUEST.oneofs_by_name['request']
-_RECOGNITIONCONFIG.fields_by_name['config'].message_type = _CONFIGFIELD
+_RECOGNITIONCONFIG.fields_by_name['timeout_settings'].message_type = _TIMEOUTSETTINGS
+_RECOGNITIONCONFIG.fields_by_name['additional_settings'].message_type = _CONFIGFIELD
 _RECOGNITIONCONFIG.oneofs_by_name['grammar'].fields.append(
-  _RECOGNITIONCONFIG.fields_by_name['name'])
-_RECOGNITIONCONFIG.fields_by_name['name'].containing_oneof = _RECOGNITIONCONFIG.oneofs_by_name['grammar']
+  _RECOGNITIONCONFIG.fields_by_name['grammar_name'])
+_RECOGNITIONCONFIG.fields_by_name['grammar_name'].containing_oneof = _RECOGNITIONCONFIG.oneofs_by_name['grammar']
 _RECOGNITIONCONFIG.oneofs_by_name['grammar'].fields.append(
-  _RECOGNITIONCONFIG.fields_by_name['data'])
-_RECOGNITIONCONFIG.fields_by_name['data'].containing_oneof = _RECOGNITIONCONFIG.oneofs_by_name['grammar']
+  _RECOGNITIONCONFIG.fields_by_name['grammar_data'])
+_RECOGNITIONCONFIG.fields_by_name['grammar_data'].containing_oneof = _RECOGNITIONCONFIG.oneofs_by_name['grammar']
 _RECOGNIZERESPONSE.fields_by_name['status'].enum_type = _RESPONSESTATUS
 _RECOGNIZERESPONSE.fields_by_name['results'].message_type = _RECOGNIZEDPHRASE
 _RECOGNIZEDPHRASE_RECOGNIZEDWORD.containing_type = _RECOGNIZEDPHRASE
@@ -533,6 +579,7 @@ _RECOGNIZEDPHRASE.fields_by_name['words'].message_type = _RECOGNIZEDPHRASE_RECOG
 _DEFINEGRAMMARRESPONSE.fields_by_name['status'].enum_type = _RESPONSESTATUS
 DESCRIPTOR.message_types_by_name['RecognizeRequest'] = _RECOGNIZEREQUEST
 DESCRIPTOR.message_types_by_name['RecognitionConfig'] = _RECOGNITIONCONFIG
+DESCRIPTOR.message_types_by_name['TimeoutSettings'] = _TIMEOUTSETTINGS
 DESCRIPTOR.message_types_by_name['ConfigField'] = _CONFIGFIELD
 DESCRIPTOR.message_types_by_name['RecognizeResponse'] = _RECOGNIZERESPONSE
 DESCRIPTOR.message_types_by_name['RecognizedPhrase'] = _RECOGNIZEDPHRASE
@@ -554,6 +601,13 @@ RecognitionConfig = _reflection.GeneratedProtocolMessageType('RecognitionConfig'
   # @@protoc_insertion_point(class_scope:techmo.sarmata.RecognitionConfig)
   ))
 _sym_db.RegisterMessage(RecognitionConfig)
+
+TimeoutSettings = _reflection.GeneratedProtocolMessageType('TimeoutSettings', (_message.Message,), dict(
+  DESCRIPTOR = _TIMEOUTSETTINGS,
+  __module__ = 'sarmata_asr_pb2'
+  # @@protoc_insertion_point(class_scope:techmo.sarmata.TimeoutSettings)
+  ))
+_sym_db.RegisterMessage(TimeoutSettings)
 
 ConfigField = _reflection.GeneratedProtocolMessageType('ConfigField', (_message.Message,), dict(
   DESCRIPTOR = _CONFIGFIELD,
@@ -606,8 +660,8 @@ _ASR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=1253,
-  serialized_end=1438,
+  serialized_start=1478,
+  serialized_end=1663,
   methods=[
   _descriptor.MethodDescriptor(
     name='Recognize',

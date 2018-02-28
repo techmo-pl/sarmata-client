@@ -5,18 +5,10 @@
 // Techmo Sarmata ASR API
 // version: 2.0.0
 // authors: Dawid Skurzok, Paweł Jaciów
-// date:    2018-01-30
+// date:    2018-02-26
 //
 // Some content is derived from:
 // https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/cloud_speech.proto
-//
-// Grammar persistence options:
-// - per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
-// - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
-// - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
-//
-// Users account manipulation will be provided by another service.
-//
 #ifndef GRPC_sarmata_5fasr_2eproto__INCLUDED
 #define GRPC_sarmata_5fasr_2eproto__INCLUDED
 
@@ -43,7 +35,14 @@ class ServerContext;
 namespace techmo {
 namespace sarmata {
 
-// Service that implements Techmo ASR API.
+// Service that implements Techmo Automatic-Speech-Recognition (ASR) API.
+//
+// Grammar persistence options:
+// - per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
+// - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
+// - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
+//
+// Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
 class ASR final {
  public:
   static constexpr char const* service_full_name() {

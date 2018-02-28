@@ -57,6 +57,9 @@ extern RecognizedPhraseDefaultTypeInternal _RecognizedPhrase_default_instance_;
 class RecognizedPhrase_RecognizedWord;
 class RecognizedPhrase_RecognizedWordDefaultTypeInternal;
 extern RecognizedPhrase_RecognizedWordDefaultTypeInternal _RecognizedPhrase_RecognizedWord_default_instance_;
+class TimeoutSettings;
+class TimeoutSettingsDefaultTypeInternal;
+extern TimeoutSettingsDefaultTypeInternal _TimeoutSettings_default_instance_;
 }  // namespace sarmata
 }  // namespace techmo
 
@@ -278,8 +281,8 @@ class RecognitionConfig : public ::google::protobuf::Message /* @@protoc_inserti
   static const RecognitionConfig& default_instance();
 
   enum GrammarCase {
-    kName = 5,
-    kData = 6,
+    kGrammarName = 1,
+    kGrammarData = 2,
     GRAMMAR_NOT_SET = 0,
   };
 
@@ -335,31 +338,26 @@ class RecognitionConfig : public ::google::protobuf::Message /* @@protoc_inserti
 
   // accessors -------------------------------------------------------
 
-  // repeated .techmo.sarmata.ConfigField config = 1;
-  int config_size() const;
-  void clear_config();
-  static const int kConfigFieldNumber = 1;
-  const ::techmo::sarmata::ConfigField& config(int index) const;
-  ::techmo::sarmata::ConfigField* mutable_config(int index);
-  ::techmo::sarmata::ConfigField* add_config();
+  // repeated .techmo.sarmata.ConfigField additional_settings = 7;
+  int additional_settings_size() const;
+  void clear_additional_settings();
+  static const int kAdditionalSettingsFieldNumber = 7;
+  const ::techmo::sarmata::ConfigField& additional_settings(int index) const;
+  ::techmo::sarmata::ConfigField* mutable_additional_settings(int index);
+  ::techmo::sarmata::ConfigField* add_additional_settings();
   ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField >*
-      mutable_config();
+      mutable_additional_settings();
   const ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField >&
-      config() const;
+      additional_settings() const;
 
-  // string token = 2;
-  void clear_token();
-  static const int kTokenFieldNumber = 2;
-  const ::std::string& token() const;
-  void set_token(const ::std::string& value);
-  #if LANG_CXX11
-  void set_token(::std::string&& value);
-  #endif
-  void set_token(const char* value);
-  void set_token(const char* value, size_t size);
-  ::std::string* mutable_token();
-  ::std::string* release_token();
-  void set_allocated_token(::std::string* token);
+  // .techmo.sarmata.TimeoutSettings timeout_settings = 6;
+  bool has_timeout_settings() const;
+  void clear_timeout_settings();
+  static const int kTimeoutSettingsFieldNumber = 6;
+  const ::techmo::sarmata::TimeoutSettings& timeout_settings() const;
+  ::techmo::sarmata::TimeoutSettings* mutable_timeout_settings();
+  ::techmo::sarmata::TimeoutSettings* release_timeout_settings();
+  void set_allocated_timeout_settings(::techmo::sarmata::TimeoutSettings* timeout_settings);
 
   // int32 sample_rate_hertz = 3;
   void clear_sample_rate_hertz();
@@ -373,63 +371,188 @@ class RecognitionConfig : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::int32 max_alternatives() const;
   void set_max_alternatives(::google::protobuf::int32 value);
 
-  // string name = 5;
-  private:
-  bool has_name() const;
-  public:
-  void clear_name();
-  static const int kNameFieldNumber = 5;
-  const ::std::string& name() const;
-  void set_name(const ::std::string& value);
-  #if LANG_CXX11
-  void set_name(::std::string&& value);
-  #endif
-  void set_name(const char* value);
-  void set_name(const char* value, size_t size);
-  ::std::string* mutable_name();
-  ::std::string* release_name();
-  void set_allocated_name(::std::string* name);
+  // double no_match_threshold = 5;
+  void clear_no_match_threshold();
+  static const int kNoMatchThresholdFieldNumber = 5;
+  double no_match_threshold() const;
+  void set_no_match_threshold(double value);
 
-  // string data = 6;
+  // string grammar_name = 1;
   private:
-  bool has_data() const;
+  bool has_grammar_name() const;
   public:
-  void clear_data();
-  static const int kDataFieldNumber = 6;
-  const ::std::string& data() const;
-  void set_data(const ::std::string& value);
+  void clear_grammar_name();
+  static const int kGrammarNameFieldNumber = 1;
+  const ::std::string& grammar_name() const;
+  void set_grammar_name(const ::std::string& value);
   #if LANG_CXX11
-  void set_data(::std::string&& value);
+  void set_grammar_name(::std::string&& value);
   #endif
-  void set_data(const char* value);
-  void set_data(const char* value, size_t size);
-  ::std::string* mutable_data();
-  ::std::string* release_data();
-  void set_allocated_data(::std::string* data);
+  void set_grammar_name(const char* value);
+  void set_grammar_name(const char* value, size_t size);
+  ::std::string* mutable_grammar_name();
+  ::std::string* release_grammar_name();
+  void set_allocated_grammar_name(::std::string* grammar_name);
+
+  // string grammar_data = 2;
+  private:
+  bool has_grammar_data() const;
+  public:
+  void clear_grammar_data();
+  static const int kGrammarDataFieldNumber = 2;
+  const ::std::string& grammar_data() const;
+  void set_grammar_data(const ::std::string& value);
+  #if LANG_CXX11
+  void set_grammar_data(::std::string&& value);
+  #endif
+  void set_grammar_data(const char* value);
+  void set_grammar_data(const char* value, size_t size);
+  ::std::string* mutable_grammar_data();
+  ::std::string* release_grammar_data();
+  void set_allocated_grammar_data(::std::string* grammar_data);
 
   GrammarCase grammar_case() const;
   // @@protoc_insertion_point(class_scope:techmo.sarmata.RecognitionConfig)
  private:
-  void set_has_name();
-  void set_has_data();
+  void set_has_grammar_name();
+  void set_has_grammar_data();
 
   inline bool has_grammar() const;
   void clear_grammar();
   inline void clear_has_grammar();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField > config_;
-  ::google::protobuf::internal::ArenaStringPtr token_;
+  ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField > additional_settings_;
+  ::techmo::sarmata::TimeoutSettings* timeout_settings_;
   ::google::protobuf::int32 sample_rate_hertz_;
   ::google::protobuf::int32 max_alternatives_;
+  double no_match_threshold_;
   union GrammarUnion {
     GrammarUnion() {}
-    ::google::protobuf::internal::ArenaStringPtr name_;
-    ::google::protobuf::internal::ArenaStringPtr data_;
+    ::google::protobuf::internal::ArenaStringPtr grammar_name_;
+    ::google::protobuf::internal::ArenaStringPtr grammar_data_;
   } grammar_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
+  friend struct protobuf_sarmata_5fasr_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class TimeoutSettings : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:techmo.sarmata.TimeoutSettings) */ {
+ public:
+  TimeoutSettings();
+  virtual ~TimeoutSettings();
+
+  TimeoutSettings(const TimeoutSettings& from);
+
+  inline TimeoutSettings& operator=(const TimeoutSettings& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  TimeoutSettings(TimeoutSettings&& from) noexcept
+    : TimeoutSettings() {
+    *this = ::std::move(from);
+  }
+
+  inline TimeoutSettings& operator=(TimeoutSettings&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const TimeoutSettings& default_instance();
+
+  static inline const TimeoutSettings* internal_default_instance() {
+    return reinterpret_cast<const TimeoutSettings*>(
+               &_TimeoutSettings_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    2;
+
+  void Swap(TimeoutSettings* other);
+  friend void swap(TimeoutSettings& a, TimeoutSettings& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline TimeoutSettings* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  TimeoutSettings* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const TimeoutSettings& from);
+  void MergeFrom(const TimeoutSettings& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(TimeoutSettings* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // int32 no_input_timeout = 1;
+  void clear_no_input_timeout();
+  static const int kNoInputTimeoutFieldNumber = 1;
+  ::google::protobuf::int32 no_input_timeout() const;
+  void set_no_input_timeout(::google::protobuf::int32 value);
+
+  // int32 recognition_timeout = 2;
+  void clear_recognition_timeout();
+  static const int kRecognitionTimeoutFieldNumber = 2;
+  ::google::protobuf::int32 recognition_timeout() const;
+  void set_recognition_timeout(::google::protobuf::int32 value);
+
+  // int32 speech_complete_timeout = 3;
+  void clear_speech_complete_timeout();
+  static const int kSpeechCompleteTimeoutFieldNumber = 3;
+  ::google::protobuf::int32 speech_complete_timeout() const;
+  void set_speech_complete_timeout(::google::protobuf::int32 value);
+
+  // int32 speech_incomplete_timeout = 4;
+  void clear_speech_incomplete_timeout();
+  static const int kSpeechIncompleteTimeoutFieldNumber = 4;
+  ::google::protobuf::int32 speech_incomplete_timeout() const;
+  void set_speech_incomplete_timeout(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:techmo.sarmata.TimeoutSettings)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::int32 no_input_timeout_;
+  ::google::protobuf::int32 recognition_timeout_;
+  ::google::protobuf::int32 speech_complete_timeout_;
+  ::google::protobuf::int32 speech_incomplete_timeout_;
+  mutable int _cached_size_;
   friend struct protobuf_sarmata_5fasr_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
@@ -468,7 +591,7 @@ class ConfigField : public ::google::protobuf::Message /* @@protoc_insertion_poi
                &_ConfigField_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    2;
+    3;
 
   void Swap(ConfigField* other);
   friend void swap(ConfigField& a, ConfigField& b) {
@@ -588,7 +711,7 @@ class RecognizeResponse : public ::google::protobuf::Message /* @@protoc_inserti
                &_RecognizeResponse_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
+    4;
 
   void Swap(RecognizeResponse* other);
   friend void swap(RecognizeResponse& a, RecognizeResponse& b) {
@@ -635,10 +758,10 @@ class RecognizeResponse : public ::google::protobuf::Message /* @@protoc_inserti
 
   // accessors -------------------------------------------------------
 
-  // repeated .techmo.sarmata.RecognizedPhrase results = 5;
+  // repeated .techmo.sarmata.RecognizedPhrase results = 4;
   int results_size() const;
   void clear_results();
-  static const int kResultsFieldNumber = 5;
+  static const int kResultsFieldNumber = 4;
   const ::techmo::sarmata::RecognizedPhrase& results(int index) const;
   ::techmo::sarmata::RecognizedPhrase* mutable_results(int index);
   ::techmo::sarmata::RecognizedPhrase* add_results();
@@ -661,29 +784,15 @@ class RecognizeResponse : public ::google::protobuf::Message /* @@protoc_inserti
   ::std::string* release_error();
   void set_allocated_error(::std::string* error);
 
-  // string warning = 3;
-  void clear_warning();
-  static const int kWarningFieldNumber = 3;
-  const ::std::string& warning() const;
-  void set_warning(const ::std::string& value);
-  #if LANG_CXX11
-  void set_warning(::std::string&& value);
-  #endif
-  void set_warning(const char* value);
-  void set_warning(const char* value, size_t size);
-  ::std::string* mutable_warning();
-  ::std::string* release_warning();
-  void set_allocated_warning(::std::string* warning);
-
   // .techmo.sarmata.ResponseStatus status = 1;
   void clear_status();
   static const int kStatusFieldNumber = 1;
   ::techmo::sarmata::ResponseStatus status() const;
   void set_status(::techmo::sarmata::ResponseStatus value);
 
-  // int32 event_time = 4;
+  // int32 event_time = 3;
   void clear_event_time();
-  static const int kEventTimeFieldNumber = 4;
+  static const int kEventTimeFieldNumber = 3;
   ::google::protobuf::int32 event_time() const;
   void set_event_time(::google::protobuf::int32 value);
 
@@ -693,7 +802,6 @@ class RecognizeResponse : public ::google::protobuf::Message /* @@protoc_inserti
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::RecognizedPhrase > results_;
   ::google::protobuf::internal::ArenaStringPtr error_;
-  ::google::protobuf::internal::ArenaStringPtr warning_;
   int status_;
   ::google::protobuf::int32 event_time_;
   mutable int _cached_size_;
@@ -735,7 +843,7 @@ class RecognizedPhrase_RecognizedWord : public ::google::protobuf::Message /* @@
                &_RecognizedPhrase_RecognizedWord_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    4;
+    5;
 
   void Swap(RecognizedPhrase_RecognizedWord* other);
   friend void swap(RecognizedPhrase_RecognizedWord& a, RecognizedPhrase_RecognizedWord& b) {
@@ -868,7 +976,7 @@ class RecognizedPhrase : public ::google::protobuf::Message /* @@protoc_insertio
                &_RecognizedPhrase_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    5;
+    6;
 
   void Swap(RecognizedPhrase* other);
   friend void swap(RecognizedPhrase& a, RecognizedPhrase& b) {
@@ -1002,7 +1110,7 @@ class DefineGrammarRequest : public ::google::protobuf::Message /* @@protoc_inse
                &_DefineGrammarRequest_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    6;
+    7;
 
   void Swap(DefineGrammarRequest* other);
   friend void swap(DefineGrammarRequest& a, DefineGrammarRequest& b) {
@@ -1049,55 +1157,40 @@ class DefineGrammarRequest : public ::google::protobuf::Message /* @@protoc_inse
 
   // accessors -------------------------------------------------------
 
-  // string token = 1;
-  void clear_token();
-  static const int kTokenFieldNumber = 1;
-  const ::std::string& token() const;
-  void set_token(const ::std::string& value);
+  // string grammar_name = 1;
+  void clear_grammar_name();
+  static const int kGrammarNameFieldNumber = 1;
+  const ::std::string& grammar_name() const;
+  void set_grammar_name(const ::std::string& value);
   #if LANG_CXX11
-  void set_token(::std::string&& value);
+  void set_grammar_name(::std::string&& value);
   #endif
-  void set_token(const char* value);
-  void set_token(const char* value, size_t size);
-  ::std::string* mutable_token();
-  ::std::string* release_token();
-  void set_allocated_token(::std::string* token);
+  void set_grammar_name(const char* value);
+  void set_grammar_name(const char* value, size_t size);
+  ::std::string* mutable_grammar_name();
+  ::std::string* release_grammar_name();
+  void set_allocated_grammar_name(::std::string* grammar_name);
 
-  // string name = 2;
-  void clear_name();
-  static const int kNameFieldNumber = 2;
-  const ::std::string& name() const;
-  void set_name(const ::std::string& value);
+  // string grammar_data = 2;
+  void clear_grammar_data();
+  static const int kGrammarDataFieldNumber = 2;
+  const ::std::string& grammar_data() const;
+  void set_grammar_data(const ::std::string& value);
   #if LANG_CXX11
-  void set_name(::std::string&& value);
+  void set_grammar_data(::std::string&& value);
   #endif
-  void set_name(const char* value);
-  void set_name(const char* value, size_t size);
-  ::std::string* mutable_name();
-  ::std::string* release_name();
-  void set_allocated_name(::std::string* name);
-
-  // string grammar = 3;
-  void clear_grammar();
-  static const int kGrammarFieldNumber = 3;
-  const ::std::string& grammar() const;
-  void set_grammar(const ::std::string& value);
-  #if LANG_CXX11
-  void set_grammar(::std::string&& value);
-  #endif
-  void set_grammar(const char* value);
-  void set_grammar(const char* value, size_t size);
-  ::std::string* mutable_grammar();
-  ::std::string* release_grammar();
-  void set_allocated_grammar(::std::string* grammar);
+  void set_grammar_data(const char* value);
+  void set_grammar_data(const char* value, size_t size);
+  ::std::string* mutable_grammar_data();
+  ::std::string* release_grammar_data();
+  void set_allocated_grammar_data(::std::string* grammar_data);
 
   // @@protoc_insertion_point(class_scope:techmo.sarmata.DefineGrammarRequest)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr token_;
-  ::google::protobuf::internal::ArenaStringPtr name_;
-  ::google::protobuf::internal::ArenaStringPtr grammar_;
+  ::google::protobuf::internal::ArenaStringPtr grammar_name_;
+  ::google::protobuf::internal::ArenaStringPtr grammar_data_;
   mutable int _cached_size_;
   friend struct protobuf_sarmata_5fasr_2eproto::TableStruct;
 };
@@ -1137,7 +1230,7 @@ class DefineGrammarResponse : public ::google::protobuf::Message /* @@protoc_ins
                &_DefineGrammarResponse_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    7;
+    8;
 
   void Swap(DefineGrammarResponse* other);
   friend void swap(DefineGrammarResponse& a, DefineGrammarResponse& b) {
@@ -1388,87 +1481,194 @@ inline RecognizeRequest::RequestCase RecognizeRequest::request_case() const {
 
 // RecognitionConfig
 
-// repeated .techmo.sarmata.ConfigField config = 1;
-inline int RecognitionConfig::config_size() const {
-  return config_.size();
+// string grammar_name = 1;
+inline bool RecognitionConfig::has_grammar_name() const {
+  return grammar_case() == kGrammarName;
 }
-inline void RecognitionConfig::clear_config() {
-  config_.Clear();
+inline void RecognitionConfig::set_has_grammar_name() {
+  _oneof_case_[0] = kGrammarName;
 }
-inline const ::techmo::sarmata::ConfigField& RecognitionConfig::config(int index) const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.config)
-  return config_.Get(index);
+inline void RecognitionConfig::clear_grammar_name() {
+  if (has_grammar_name()) {
+    grammar_.grammar_name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    clear_has_grammar();
+  }
 }
-inline ::techmo::sarmata::ConfigField* RecognitionConfig::mutable_config(int index) {
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.config)
-  return config_.Mutable(index);
+inline const ::std::string& RecognitionConfig::grammar_name() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.grammar_name)
+  if (has_grammar_name()) {
+    return grammar_.grammar_name_.GetNoArena();
+  }
+  return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
 }
-inline ::techmo::sarmata::ConfigField* RecognitionConfig::add_config() {
-  // @@protoc_insertion_point(field_add:techmo.sarmata.RecognitionConfig.config)
-  return config_.Add();
-}
-inline ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField >*
-RecognitionConfig::mutable_config() {
-  // @@protoc_insertion_point(field_mutable_list:techmo.sarmata.RecognitionConfig.config)
-  return &config_;
-}
-inline const ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField >&
-RecognitionConfig::config() const {
-  // @@protoc_insertion_point(field_list:techmo.sarmata.RecognitionConfig.config)
-  return config_;
-}
-
-// string token = 2;
-inline void RecognitionConfig::clear_token() {
-  token_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& RecognitionConfig::token() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.token)
-  return token_.GetNoArena();
-}
-inline void RecognitionConfig::set_token(const ::std::string& value) {
-  
-  token_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.token)
+inline void RecognitionConfig::set_grammar_name(const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.grammar_name)
+  if (!has_grammar_name()) {
+    clear_grammar();
+    set_has_grammar_name();
+    grammar_.grammar_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.grammar_name)
 }
 #if LANG_CXX11
-inline void RecognitionConfig::set_token(::std::string&& value) {
-  
-  token_.SetNoArena(
+inline void RecognitionConfig::set_grammar_name(::std::string&& value) {
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.grammar_name)
+  if (!has_grammar_name()) {
+    clear_grammar();
+    set_has_grammar_name();
+    grammar_.grammar_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.RecognitionConfig.token)
+  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.RecognitionConfig.grammar_name)
 }
 #endif
-inline void RecognitionConfig::set_token(const char* value) {
+inline void RecognitionConfig::set_grammar_name(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-  
-  token_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.RecognitionConfig.token)
-}
-inline void RecognitionConfig::set_token(const char* value, size_t size) {
-  
-  token_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.RecognitionConfig.token)
-}
-inline ::std::string* RecognitionConfig::mutable_token() {
-  
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.token)
-  return token_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* RecognitionConfig::release_token() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognitionConfig.token)
-  
-  return token_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void RecognitionConfig::set_allocated_token(::std::string* token) {
-  if (token != NULL) {
-    
-  } else {
-    
+  if (!has_grammar_name()) {
+    clear_grammar();
+    set_has_grammar_name();
+    grammar_.grammar_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
-  token_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), token);
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognitionConfig.token)
+  grammar_.grammar_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:techmo.sarmata.RecognitionConfig.grammar_name)
+}
+inline void RecognitionConfig::set_grammar_name(const char* value, size_t size) {
+  if (!has_grammar_name()) {
+    clear_grammar();
+    set_has_grammar_name();
+    grammar_.grammar_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.RecognitionConfig.grammar_name)
+}
+inline ::std::string* RecognitionConfig::mutable_grammar_name() {
+  if (!has_grammar_name()) {
+    clear_grammar();
+    set_has_grammar_name();
+    grammar_.grammar_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.grammar_name)
+  return grammar_.grammar_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* RecognitionConfig::release_grammar_name() {
+  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognitionConfig.grammar_name)
+  if (has_grammar_name()) {
+    clear_has_grammar();
+    return grammar_.grammar_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  } else {
+    return NULL;
+  }
+}
+inline void RecognitionConfig::set_allocated_grammar_name(::std::string* grammar_name) {
+  if (!has_grammar_name()) {
+    grammar_.grammar_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  clear_grammar();
+  if (grammar_name != NULL) {
+    set_has_grammar_name();
+    grammar_.grammar_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+        grammar_name);
+  }
+  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognitionConfig.grammar_name)
+}
+
+// string grammar_data = 2;
+inline bool RecognitionConfig::has_grammar_data() const {
+  return grammar_case() == kGrammarData;
+}
+inline void RecognitionConfig::set_has_grammar_data() {
+  _oneof_case_[0] = kGrammarData;
+}
+inline void RecognitionConfig::clear_grammar_data() {
+  if (has_grammar_data()) {
+    grammar_.grammar_data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    clear_has_grammar();
+  }
+}
+inline const ::std::string& RecognitionConfig::grammar_data() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.grammar_data)
+  if (has_grammar_data()) {
+    return grammar_.grammar_data_.GetNoArena();
+  }
+  return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
+}
+inline void RecognitionConfig::set_grammar_data(const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.grammar_data)
+  if (!has_grammar_data()) {
+    clear_grammar();
+    set_has_grammar_data();
+    grammar_.grammar_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.grammar_data)
+}
+#if LANG_CXX11
+inline void RecognitionConfig::set_grammar_data(::std::string&& value) {
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.grammar_data)
+  if (!has_grammar_data()) {
+    clear_grammar();
+    set_has_grammar_data();
+    grammar_.grammar_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_data_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.RecognitionConfig.grammar_data)
+}
+#endif
+inline void RecognitionConfig::set_grammar_data(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  if (!has_grammar_data()) {
+    clear_grammar();
+    set_has_grammar_data();
+    grammar_.grammar_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:techmo.sarmata.RecognitionConfig.grammar_data)
+}
+inline void RecognitionConfig::set_grammar_data(const char* value, size_t size) {
+  if (!has_grammar_data()) {
+    clear_grammar();
+    set_has_grammar_data();
+    grammar_.grammar_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  grammar_.grammar_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.RecognitionConfig.grammar_data)
+}
+inline ::std::string* RecognitionConfig::mutable_grammar_data() {
+  if (!has_grammar_data()) {
+    clear_grammar();
+    set_has_grammar_data();
+    grammar_.grammar_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.grammar_data)
+  return grammar_.grammar_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* RecognitionConfig::release_grammar_data() {
+  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognitionConfig.grammar_data)
+  if (has_grammar_data()) {
+    clear_has_grammar();
+    return grammar_.grammar_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  } else {
+    return NULL;
+  }
+}
+inline void RecognitionConfig::set_allocated_grammar_data(::std::string* grammar_data) {
+  if (!has_grammar_data()) {
+    grammar_.grammar_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  clear_grammar();
+  if (grammar_data != NULL) {
+    set_has_grammar_data();
+    grammar_.grammar_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+        grammar_data);
+  }
+  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognitionConfig.grammar_data)
 }
 
 // int32 sample_rate_hertz = 3;
@@ -1499,194 +1699,88 @@ inline void RecognitionConfig::set_max_alternatives(::google::protobuf::int32 va
   // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.max_alternatives)
 }
 
-// string name = 5;
-inline bool RecognitionConfig::has_name() const {
-  return grammar_case() == kName;
+// double no_match_threshold = 5;
+inline void RecognitionConfig::clear_no_match_threshold() {
+  no_match_threshold_ = 0;
 }
-inline void RecognitionConfig::set_has_name() {
-  _oneof_case_[0] = kName;
+inline double RecognitionConfig::no_match_threshold() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.no_match_threshold)
+  return no_match_threshold_;
 }
-inline void RecognitionConfig::clear_name() {
-  if (has_name()) {
-    grammar_.name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-    clear_has_grammar();
-  }
-}
-inline const ::std::string& RecognitionConfig::name() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.name)
-  if (has_name()) {
-    return grammar_.name_.GetNoArena();
-  }
-  return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
-}
-inline void RecognitionConfig::set_name(const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.name)
-  if (!has_name()) {
-    clear_grammar();
-    set_has_name();
-    grammar_.name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.name)
-}
-#if LANG_CXX11
-inline void RecognitionConfig::set_name(::std::string&& value) {
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.name)
-  if (!has_name()) {
-    clear_grammar();
-    set_has_name();
-    grammar_.name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.name_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.RecognitionConfig.name)
-}
-#endif
-inline void RecognitionConfig::set_name(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  if (!has_name()) {
-    clear_grammar();
-    set_has_name();
-    grammar_.name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.RecognitionConfig.name)
-}
-inline void RecognitionConfig::set_name(const char* value, size_t size) {
-  if (!has_name()) {
-    clear_grammar();
-    set_has_name();
-    grammar_.name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(
-      reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.RecognitionConfig.name)
-}
-inline ::std::string* RecognitionConfig::mutable_name() {
-  if (!has_name()) {
-    clear_grammar();
-    set_has_name();
-    grammar_.name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.name)
-  return grammar_.name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* RecognitionConfig::release_name() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognitionConfig.name)
-  if (has_name()) {
-    clear_has_grammar();
-    return grammar_.name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  } else {
-    return NULL;
-  }
-}
-inline void RecognitionConfig::set_allocated_name(::std::string* name) {
-  if (!has_name()) {
-    grammar_.name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  clear_grammar();
-  if (name != NULL) {
-    set_has_name();
-    grammar_.name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-        name);
-  }
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognitionConfig.name)
+inline void RecognitionConfig::set_no_match_threshold(double value) {
+  
+  no_match_threshold_ = value;
+  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.no_match_threshold)
 }
 
-// string data = 6;
-inline bool RecognitionConfig::has_data() const {
-  return grammar_case() == kData;
+// .techmo.sarmata.TimeoutSettings timeout_settings = 6;
+inline bool RecognitionConfig::has_timeout_settings() const {
+  return this != internal_default_instance() && timeout_settings_ != NULL;
 }
-inline void RecognitionConfig::set_has_data() {
-  _oneof_case_[0] = kData;
+inline void RecognitionConfig::clear_timeout_settings() {
+  if (GetArenaNoVirtual() == NULL && timeout_settings_ != NULL) delete timeout_settings_;
+  timeout_settings_ = NULL;
 }
-inline void RecognitionConfig::clear_data() {
-  if (has_data()) {
-    grammar_.data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-    clear_has_grammar();
+inline const ::techmo::sarmata::TimeoutSettings& RecognitionConfig::timeout_settings() const {
+  const ::techmo::sarmata::TimeoutSettings* p = timeout_settings_;
+  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.timeout_settings)
+  return p != NULL ? *p : *reinterpret_cast<const ::techmo::sarmata::TimeoutSettings*>(
+      &::techmo::sarmata::_TimeoutSettings_default_instance_);
+}
+inline ::techmo::sarmata::TimeoutSettings* RecognitionConfig::mutable_timeout_settings() {
+  
+  if (timeout_settings_ == NULL) {
+    timeout_settings_ = new ::techmo::sarmata::TimeoutSettings;
   }
+  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.timeout_settings)
+  return timeout_settings_;
 }
-inline const ::std::string& RecognitionConfig::data() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.data)
-  if (has_data()) {
-    return grammar_.data_.GetNoArena();
-  }
-  return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
+inline ::techmo::sarmata::TimeoutSettings* RecognitionConfig::release_timeout_settings() {
+  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognitionConfig.timeout_settings)
+  
+  ::techmo::sarmata::TimeoutSettings* temp = timeout_settings_;
+  timeout_settings_ = NULL;
+  return temp;
 }
-inline void RecognitionConfig::set_data(const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.data)
-  if (!has_data()) {
-    clear_grammar();
-    set_has_data();
-    grammar_.data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.data)
-}
-#if LANG_CXX11
-inline void RecognitionConfig::set_data(::std::string&& value) {
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognitionConfig.data)
-  if (!has_data()) {
-    clear_grammar();
-    set_has_data();
-    grammar_.data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.data_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.RecognitionConfig.data)
-}
-#endif
-inline void RecognitionConfig::set_data(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  if (!has_data()) {
-    clear_grammar();
-    set_has_data();
-    grammar_.data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.RecognitionConfig.data)
-}
-inline void RecognitionConfig::set_data(const char* value, size_t size) {
-  if (!has_data()) {
-    clear_grammar();
-    set_has_data();
-    grammar_.data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  grammar_.data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(
-      reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.RecognitionConfig.data)
-}
-inline ::std::string* RecognitionConfig::mutable_data() {
-  if (!has_data()) {
-    clear_grammar();
-    set_has_data();
-    grammar_.data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.data)
-  return grammar_.data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* RecognitionConfig::release_data() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognitionConfig.data)
-  if (has_data()) {
-    clear_has_grammar();
-    return grammar_.data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline void RecognitionConfig::set_allocated_timeout_settings(::techmo::sarmata::TimeoutSettings* timeout_settings) {
+  delete timeout_settings_;
+  timeout_settings_ = timeout_settings;
+  if (timeout_settings) {
+    
   } else {
-    return NULL;
+    
   }
+  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognitionConfig.timeout_settings)
 }
-inline void RecognitionConfig::set_allocated_data(::std::string* data) {
-  if (!has_data()) {
-    grammar_.data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  clear_grammar();
-  if (data != NULL) {
-    set_has_data();
-    grammar_.data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-        data);
-  }
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognitionConfig.data)
+
+// repeated .techmo.sarmata.ConfigField additional_settings = 7;
+inline int RecognitionConfig::additional_settings_size() const {
+  return additional_settings_.size();
+}
+inline void RecognitionConfig::clear_additional_settings() {
+  additional_settings_.Clear();
+}
+inline const ::techmo::sarmata::ConfigField& RecognitionConfig::additional_settings(int index) const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognitionConfig.additional_settings)
+  return additional_settings_.Get(index);
+}
+inline ::techmo::sarmata::ConfigField* RecognitionConfig::mutable_additional_settings(int index) {
+  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognitionConfig.additional_settings)
+  return additional_settings_.Mutable(index);
+}
+inline ::techmo::sarmata::ConfigField* RecognitionConfig::add_additional_settings() {
+  // @@protoc_insertion_point(field_add:techmo.sarmata.RecognitionConfig.additional_settings)
+  return additional_settings_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField >*
+RecognitionConfig::mutable_additional_settings() {
+  // @@protoc_insertion_point(field_mutable_list:techmo.sarmata.RecognitionConfig.additional_settings)
+  return &additional_settings_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::techmo::sarmata::ConfigField >&
+RecognitionConfig::additional_settings() const {
+  // @@protoc_insertion_point(field_list:techmo.sarmata.RecognitionConfig.additional_settings)
+  return additional_settings_;
 }
 
 inline bool RecognitionConfig::has_grammar() const {
@@ -1698,6 +1792,66 @@ inline void RecognitionConfig::clear_has_grammar() {
 inline RecognitionConfig::GrammarCase RecognitionConfig::grammar_case() const {
   return RecognitionConfig::GrammarCase(_oneof_case_[0]);
 }
+// -------------------------------------------------------------------
+
+// TimeoutSettings
+
+// int32 no_input_timeout = 1;
+inline void TimeoutSettings::clear_no_input_timeout() {
+  no_input_timeout_ = 0;
+}
+inline ::google::protobuf::int32 TimeoutSettings::no_input_timeout() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.TimeoutSettings.no_input_timeout)
+  return no_input_timeout_;
+}
+inline void TimeoutSettings::set_no_input_timeout(::google::protobuf::int32 value) {
+  
+  no_input_timeout_ = value;
+  // @@protoc_insertion_point(field_set:techmo.sarmata.TimeoutSettings.no_input_timeout)
+}
+
+// int32 recognition_timeout = 2;
+inline void TimeoutSettings::clear_recognition_timeout() {
+  recognition_timeout_ = 0;
+}
+inline ::google::protobuf::int32 TimeoutSettings::recognition_timeout() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.TimeoutSettings.recognition_timeout)
+  return recognition_timeout_;
+}
+inline void TimeoutSettings::set_recognition_timeout(::google::protobuf::int32 value) {
+  
+  recognition_timeout_ = value;
+  // @@protoc_insertion_point(field_set:techmo.sarmata.TimeoutSettings.recognition_timeout)
+}
+
+// int32 speech_complete_timeout = 3;
+inline void TimeoutSettings::clear_speech_complete_timeout() {
+  speech_complete_timeout_ = 0;
+}
+inline ::google::protobuf::int32 TimeoutSettings::speech_complete_timeout() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.TimeoutSettings.speech_complete_timeout)
+  return speech_complete_timeout_;
+}
+inline void TimeoutSettings::set_speech_complete_timeout(::google::protobuf::int32 value) {
+  
+  speech_complete_timeout_ = value;
+  // @@protoc_insertion_point(field_set:techmo.sarmata.TimeoutSettings.speech_complete_timeout)
+}
+
+// int32 speech_incomplete_timeout = 4;
+inline void TimeoutSettings::clear_speech_incomplete_timeout() {
+  speech_incomplete_timeout_ = 0;
+}
+inline ::google::protobuf::int32 TimeoutSettings::speech_incomplete_timeout() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.TimeoutSettings.speech_incomplete_timeout)
+  return speech_incomplete_timeout_;
+}
+inline void TimeoutSettings::set_speech_incomplete_timeout(::google::protobuf::int32 value) {
+  
+  speech_incomplete_timeout_ = value;
+  // @@protoc_insertion_point(field_set:techmo.sarmata.TimeoutSettings.speech_incomplete_timeout)
+}
+
 // -------------------------------------------------------------------
 
 // ConfigField
@@ -1879,60 +2033,7 @@ inline void RecognizeResponse::set_allocated_error(::std::string* error) {
   // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognizeResponse.error)
 }
 
-// string warning = 3;
-inline void RecognizeResponse::clear_warning() {
-  warning_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& RecognizeResponse::warning() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.RecognizeResponse.warning)
-  return warning_.GetNoArena();
-}
-inline void RecognizeResponse::set_warning(const ::std::string& value) {
-  
-  warning_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.RecognizeResponse.warning)
-}
-#if LANG_CXX11
-inline void RecognizeResponse::set_warning(::std::string&& value) {
-  
-  warning_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.RecognizeResponse.warning)
-}
-#endif
-inline void RecognizeResponse::set_warning(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  warning_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.RecognizeResponse.warning)
-}
-inline void RecognizeResponse::set_warning(const char* value, size_t size) {
-  
-  warning_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.RecognizeResponse.warning)
-}
-inline ::std::string* RecognizeResponse::mutable_warning() {
-  
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.RecognizeResponse.warning)
-  return warning_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* RecognizeResponse::release_warning() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.RecognizeResponse.warning)
-  
-  return warning_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void RecognizeResponse::set_allocated_warning(::std::string* warning) {
-  if (warning != NULL) {
-    
-  } else {
-    
-  }
-  warning_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), warning);
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.RecognizeResponse.warning)
-}
-
-// int32 event_time = 4;
+// int32 event_time = 3;
 inline void RecognizeResponse::clear_event_time() {
   event_time_ = 0;
 }
@@ -1946,7 +2047,7 @@ inline void RecognizeResponse::set_event_time(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:techmo.sarmata.RecognizeResponse.event_time)
 }
 
-// repeated .techmo.sarmata.RecognizedPhrase results = 5;
+// repeated .techmo.sarmata.RecognizedPhrase results = 4;
 inline int RecognizeResponse::results_size() const {
   return results_.size();
 }
@@ -2208,163 +2309,110 @@ inline void RecognizedPhrase::set_allocated_semantic_interpretation(::std::strin
 
 // DefineGrammarRequest
 
-// string token = 1;
-inline void DefineGrammarRequest::clear_token() {
-  token_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// string grammar_name = 1;
+inline void DefineGrammarRequest::clear_grammar_name() {
+  grammar_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& DefineGrammarRequest::token() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.DefineGrammarRequest.token)
-  return token_.GetNoArena();
+inline const ::std::string& DefineGrammarRequest::grammar_name() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.DefineGrammarRequest.grammar_name)
+  return grammar_name_.GetNoArena();
 }
-inline void DefineGrammarRequest::set_token(const ::std::string& value) {
+inline void DefineGrammarRequest::set_grammar_name(const ::std::string& value) {
   
-  token_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.DefineGrammarRequest.token)
+  grammar_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:techmo.sarmata.DefineGrammarRequest.grammar_name)
 }
 #if LANG_CXX11
-inline void DefineGrammarRequest::set_token(::std::string&& value) {
+inline void DefineGrammarRequest::set_grammar_name(::std::string&& value) {
   
-  token_.SetNoArena(
+  grammar_name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.DefineGrammarRequest.token)
+  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.DefineGrammarRequest.grammar_name)
 }
 #endif
-inline void DefineGrammarRequest::set_token(const char* value) {
+inline void DefineGrammarRequest::set_grammar_name(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
-  token_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.DefineGrammarRequest.token)
+  grammar_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:techmo.sarmata.DefineGrammarRequest.grammar_name)
 }
-inline void DefineGrammarRequest::set_token(const char* value, size_t size) {
+inline void DefineGrammarRequest::set_grammar_name(const char* value, size_t size) {
   
-  token_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  grammar_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.DefineGrammarRequest.token)
+  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.DefineGrammarRequest.grammar_name)
 }
-inline ::std::string* DefineGrammarRequest::mutable_token() {
+inline ::std::string* DefineGrammarRequest::mutable_grammar_name() {
   
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.DefineGrammarRequest.token)
-  return token_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:techmo.sarmata.DefineGrammarRequest.grammar_name)
+  return grammar_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* DefineGrammarRequest::release_token() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.DefineGrammarRequest.token)
+inline ::std::string* DefineGrammarRequest::release_grammar_name() {
+  // @@protoc_insertion_point(field_release:techmo.sarmata.DefineGrammarRequest.grammar_name)
   
-  return token_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return grammar_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void DefineGrammarRequest::set_allocated_token(::std::string* token) {
-  if (token != NULL) {
+inline void DefineGrammarRequest::set_allocated_grammar_name(::std::string* grammar_name) {
+  if (grammar_name != NULL) {
     
   } else {
     
   }
-  token_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), token);
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.DefineGrammarRequest.token)
+  grammar_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), grammar_name);
+  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.DefineGrammarRequest.grammar_name)
 }
 
-// string name = 2;
-inline void DefineGrammarRequest::clear_name() {
-  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// string grammar_data = 2;
+inline void DefineGrammarRequest::clear_grammar_data() {
+  grammar_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& DefineGrammarRequest::name() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.DefineGrammarRequest.name)
-  return name_.GetNoArena();
+inline const ::std::string& DefineGrammarRequest::grammar_data() const {
+  // @@protoc_insertion_point(field_get:techmo.sarmata.DefineGrammarRequest.grammar_data)
+  return grammar_data_.GetNoArena();
 }
-inline void DefineGrammarRequest::set_name(const ::std::string& value) {
+inline void DefineGrammarRequest::set_grammar_data(const ::std::string& value) {
   
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.DefineGrammarRequest.name)
+  grammar_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:techmo.sarmata.DefineGrammarRequest.grammar_data)
 }
 #if LANG_CXX11
-inline void DefineGrammarRequest::set_name(::std::string&& value) {
+inline void DefineGrammarRequest::set_grammar_data(::std::string&& value) {
   
-  name_.SetNoArena(
+  grammar_data_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.DefineGrammarRequest.name)
+  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.DefineGrammarRequest.grammar_data)
 }
 #endif
-inline void DefineGrammarRequest::set_name(const char* value) {
+inline void DefineGrammarRequest::set_grammar_data(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.DefineGrammarRequest.name)
+  grammar_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:techmo.sarmata.DefineGrammarRequest.grammar_data)
 }
-inline void DefineGrammarRequest::set_name(const char* value, size_t size) {
+inline void DefineGrammarRequest::set_grammar_data(const char* value, size_t size) {
   
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  grammar_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.DefineGrammarRequest.name)
+  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.DefineGrammarRequest.grammar_data)
 }
-inline ::std::string* DefineGrammarRequest::mutable_name() {
+inline ::std::string* DefineGrammarRequest::mutable_grammar_data() {
   
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.DefineGrammarRequest.name)
-  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:techmo.sarmata.DefineGrammarRequest.grammar_data)
+  return grammar_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* DefineGrammarRequest::release_name() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.DefineGrammarRequest.name)
+inline ::std::string* DefineGrammarRequest::release_grammar_data() {
+  // @@protoc_insertion_point(field_release:techmo.sarmata.DefineGrammarRequest.grammar_data)
   
-  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return grammar_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void DefineGrammarRequest::set_allocated_name(::std::string* name) {
-  if (name != NULL) {
+inline void DefineGrammarRequest::set_allocated_grammar_data(::std::string* grammar_data) {
+  if (grammar_data != NULL) {
     
   } else {
     
   }
-  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.DefineGrammarRequest.name)
-}
-
-// string grammar = 3;
-inline void DefineGrammarRequest::clear_grammar() {
-  grammar_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& DefineGrammarRequest::grammar() const {
-  // @@protoc_insertion_point(field_get:techmo.sarmata.DefineGrammarRequest.grammar)
-  return grammar_.GetNoArena();
-}
-inline void DefineGrammarRequest::set_grammar(const ::std::string& value) {
-  
-  grammar_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:techmo.sarmata.DefineGrammarRequest.grammar)
-}
-#if LANG_CXX11
-inline void DefineGrammarRequest::set_grammar(::std::string&& value) {
-  
-  grammar_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:techmo.sarmata.DefineGrammarRequest.grammar)
-}
-#endif
-inline void DefineGrammarRequest::set_grammar(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  grammar_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:techmo.sarmata.DefineGrammarRequest.grammar)
-}
-inline void DefineGrammarRequest::set_grammar(const char* value, size_t size) {
-  
-  grammar_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:techmo.sarmata.DefineGrammarRequest.grammar)
-}
-inline ::std::string* DefineGrammarRequest::mutable_grammar() {
-  
-  // @@protoc_insertion_point(field_mutable:techmo.sarmata.DefineGrammarRequest.grammar)
-  return grammar_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* DefineGrammarRequest::release_grammar() {
-  // @@protoc_insertion_point(field_release:techmo.sarmata.DefineGrammarRequest.grammar)
-  
-  return grammar_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void DefineGrammarRequest::set_allocated_grammar(::std::string* grammar) {
-  if (grammar != NULL) {
-    
-  } else {
-    
-  }
-  grammar_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), grammar);
-  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.DefineGrammarRequest.grammar)
+  grammar_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), grammar_data);
+  // @@protoc_insertion_point(field_set_allocated:techmo.sarmata.DefineGrammarRequest.grammar_data)
 }
 
 // -------------------------------------------------------------------
@@ -2456,6 +2504,8 @@ inline void DefineGrammarResponse::set_ok(bool value) {
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
