@@ -35,11 +35,11 @@ service ASR {
 message RecognizeRequest {
   // The request, which is either a config or audio content.
   oneof request {
-    // The `config` message provides information to the recognizer
+    // [*One-of*] The `config` message provides information to the recognizer
     // that specifies how to process the request.
     RecognitionConfig config = 1;
 
-    // The audio data to be recognized. Sequential chunks of audio data may be
+    // [*One-of*] The audio data to be recognized. Sequential chunks of audio data may be
     // sent in sequential `RecognizeRequest` messages
     // or whole data may be send in one message.
     bytes audio_content = 2;
@@ -68,14 +68,19 @@ message RecognizeRequest {
 // | *use-vad* | `bool` | false | Use Voice Activity Detector. |
 // | *vad-sil-ll* | `double` | 1.0 | Likelihood assigned to silent frames by VAD. |
 // | *vad-nonsil-ll* | `double` | 0.0 | Likelihood assigned to non-silent frames by VAD. |
+//
+// The `RecognitionConfig` message must provide sample rate
+// in `sample_rate_hertz` field and a grammar as only one of `grammar_name`
+// or `grammar_data` fields.
+// Other fields are optional to set.
 message RecognitionConfig {
   // [*Required*] grammar, which is either just a name of a grammar stored earlier with
   // `DefineGrammar` method or a full grammar data.
   oneof grammar {
-    // ID of a stored grammar to use for the recognition.
+    // [*One-of*][*Required*] ID of a stored grammar to use for the recognition.
     string grammar_name = 1;
 
-    // Grammar data to use for the recognition.
+    // [*One-of*][*Required*] Grammar data to use for the recognition.
     // Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
     string grammar_data = 2;
   }
