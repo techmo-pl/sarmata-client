@@ -114,6 +114,7 @@ how to process the request.
 
 Additional configuration can be set via `additional_settings` field.
 The following parameters are allowed to be set that way:
+
 | Parameter | Type | Default value | Description |
 | --------- |:----:|:-------------:| ----------- |
 | *beam-width* | `int` | 20 | With of the beam in log prob. |
