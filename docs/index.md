@@ -112,6 +112,22 @@ contains a grammar creation confirmation or an error message.
 Provides information to the recognizer that specifies
 how to process the request.
 
+The `RecognitionConfig` message must provide sample rate
+in `sample_rate_hertz` field and a grammar as only one of `grammar_name`
+or `grammar_data` fields.
+Other fields are optional to set.
+
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| grammar_name | [string](#string) | [*One-of*][*Required*] ID of a stored grammar to use for the recognition. |
+| grammar_data | [string](#string) | [*One-of*][*Required*] Grammar data to use for the recognition. Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/). |
+| sample_rate_hertz | [int32](#int32) | [*Required*] Sample rate in hertz of the audio data sent in all `RecognizeRequest` messages. |
+| max_alternatives | [int32](#int32) | [*Optional*] Maximum number of recognition hypotheses to be returned. Specifically, the maximum number of `Phrase` messages within each `RecognizeResponse`. The server may return fewer than `max_alternatives`. If omitted, will return a maximum of one. |
+| no_match_threshold | [double](#double) | [*Optional*] Confidence threshold to decide if phrase is correct. Results with score below the threshold are considered no match. |
+| timeout_settings | [TimeoutSettings](#techmo.sarmata.TimeoutSettings) | [*Optional*] MRCPv2-related timeout settings. Recognition will be interrupted when any of the timeouts is met. |
+| additional_settings | [ConfigField](#techmo.sarmata.ConfigField) | [*Optional*] A means to provide additional configuration via request. |
+
 Additional configuration can be set via `additional_settings` field.
 The following parameters are allowed to be set that way:
 
@@ -131,22 +147,6 @@ The following parameters are allowed to be set that way:
 | *use-vad* | `bool` | false | Use Voice Activity Detector. |
 | *vad-sil-ll* | `double` | 1.0 | Likelihood assigned to silent frames by VAD. |
 | *vad-nonsil-ll* | `double` | 0.0 | Likelihood assigned to non-silent frames by VAD. |
-
-The `RecognitionConfig` message must provide sample rate
-in `sample_rate_hertz` field and a grammar as only one of `grammar_name`
-or `grammar_data` fields.
-Other fields are optional to set.
-
-
-| Field | Type | Description |
-| ----- | ---- | ----------- |
-| grammar_name | [string](#string) | [*One-of*][*Required*] ID of a stored grammar to use for the recognition. |
-| grammar_data | [string](#string) | [*One-of*][*Required*] Grammar data to use for the recognition. Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/). |
-| sample_rate_hertz | [int32](#int32) | [*Required*] Sample rate in hertz of the audio data sent in all `RecognizeRequest` messages. |
-| max_alternatives | [int32](#int32) | [*Optional*] Maximum number of recognition hypotheses to be returned. Specifically, the maximum number of `Phrase` messages within each `RecognizeResponse`. The server may return fewer than `max_alternatives`. If omitted, will return a maximum of one. |
-| no_match_threshold | [double](#double) | [*Optional*] Confidence threshold to decide if phrase is correct. Results with score below the threshold are considered no match. |
-| timeout_settings | [TimeoutSettings](#techmo.sarmata.TimeoutSettings) | [*Optional*] MRCPv2-related timeout settings. Recognition will be interrupted when any of the timeouts is met. |
-| additional_settings | [ConfigField](#techmo.sarmata.ConfigField) | [*Optional*] A means to provide additional configuration via request. |
 
 
 
