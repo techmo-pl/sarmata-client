@@ -6,23 +6,23 @@ class SarmataSettings:
     """Default settings for Techmo Sarmata ASR (timeouts and thresholds)"""
 
     def __init__(self):
-        self.nbest = 3                      # Max number of hypotheses
-        self.no_match = 0.2                 # Confidence threshold for recognition / no-match
-        self.speech_complete = 500          # ms - MRCP speech complete timeout
-        self.speech_incomplete = 3000       # ms - MRCP speech incomplete timeout
+        self.nmax_alternativesbest = 3      # Maximum number of recognition hypotheses to be returned
+        self.no_match_threshold = 0.2       # Confidence threshold for recognition / no-match
+        self.speech_complete_timeout = 500  # ms - MRCP speech complete timeout
+        self.speech_incomplete_timeout = 3000# ms - MRCP speech incomplete timeout
         self.no_input_timeout = 5000        # ms - MRCP no input timeout
-        self.no_recognition_timeout = 10000   # ms - MRCP no recognition
+        self.recognition_timeout = 10000    # ms - MRCP no recognition
         self.session_id = ''
         self.grammar_name = ''
         self.grammar = ''
 
     def process_args(self, args):
-        self.nbest = args.nbest
-        self.no_match = args.nomatch
-        self.speech_complete = args.speech_complete
-        self.speech_incomplete = args.speech_incomplete
-        self.no_input_timeout = args.no_input
-        self.no_recognition_timeout = args.recognition_timeout
+        self.max_alternatives = args.max_alternatives
+        self.no_match_threshold = args.no_match_threshold
+        self.speech_complete_timeout = args.speech_complete_timeout
+        self.speech_incomplete_timeout = args.speech_incomplete_timeout
+        self.no_input_timeout = args.no_input_timeout
+        self.recognition_timeout = args.recognition_timeout
         self.grammar_name = args.grammar_name
 
     def set_session_id(self, session_id):
@@ -44,25 +44,4 @@ class SarmataSettings:
 
         with io.open(grammar_path, 'r', encoding='utf-8') as f:
             self.grammar = f.read()
-
-    def to_map(self):
-        """
-        Convert settings to dictionary, used in grpc request generator
-        :return:
-        """
-
-        # validate if grammar has been already loaded
-
-        if not self.grammar and not self.grammar_name:
-            raise ValueError("Grammar must be loaded or grammar name must be set first")
-
-        settings_map = {
-            "no-match-th": str(self.no_match),
-            "no-input-timeout": str(self.no_input_timeout),
-            "no-rec-timeout": str(self.no_recognition_timeout),
-            "complete-timeout": str(self.speech_complete),
-            "incomplete-timeout": str(self.speech_incomplete)
-        }
-
-        return settings_map
 

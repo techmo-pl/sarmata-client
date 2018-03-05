@@ -24,7 +24,7 @@ RemoteSession::~RemoteSession()
     }
 }
 
-void RemoteSession::PreDefineGrammar(const std::string & grammarName, const std::string & grammarData)
+DefineGrammarResponse RemoteSession::PreDefineGrammar(const std::string & grammarName, const std::string & grammarData)
 {
     DefineGrammarRequest request;
     request.set_grammar_name(grammarName);
@@ -45,24 +45,24 @@ void RemoteSession::PreDefineGrammar(const std::string & grammarName, const std:
     {
         throw std::runtime_error(std::string("Grammar not created: ") + response.error());
     }
+
+    return response;
 }
 
-void RemoteSession::Open(const std::string & token, const ASRSessionSettings & settings)
+RecognitionConfig settings_to_config(const ASRSessionSettings & settings)
 {
-    stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
-    stream_ = stub_->Recognize(&context_);
-    samplesStreamCompleted_ = false;
-    
     RecognitionConfig config;
+
     for (const auto & field : settings.config)
     {
         auto * configField = config.add_additional_settings();
         configField->set_key(field.first);
         configField->set_value(field.second);
     }
-    //config.set_token(token);//TODO: what about that?
+
     config.set_sample_rate_hertz(settings.sampleRateHertz);
     config.set_max_alternatives(settings.maxAlternatives);
+
     if (not settings.grammarName.empty())
     {
         config.set_grammar_name(settings.grammarName);
@@ -72,8 +72,26 @@ void RemoteSession::Open(const std::string & token, const ASRSessionSettings & s
         config.set_grammar_data(settings.grammarData);
     }
 
+    config.set_no_match_threshold(settings.noMatchThreshold);
+
+    auto timeouts = config.mutable_timeout_settings();
+    timeouts->set_no_input_timeout(settings.noInputTimeout);
+    timeouts->set_recognition_timeout(settings.recognitionTimeout);
+    timeouts->set_speech_complete_timeout(settings.speechCompleteTimeout);
+    timeouts->set_speech_incomplete_timeout(settings.speechIncompleteTimeout);
+
+    return config;
+}
+
+void RemoteSession::Open(const std::string & /*token*//*TODO: what about that?*/, const ASRSessionSettings & settings)
+{
+    stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
+    if (not settings.sessionId.empty()) { context_.AddMetadata("session_id", settings.sessionId); }
+    stream_ = stub_->Recognize(&context_);
+    samplesStreamCompleted_ = false;
+
     RecognizeRequest request;
-    *request.mutable_config() = config;
+    *request.mutable_config() = settings_to_config(settings);
 
     bool ok = stream_->Write(request);
     if (!ok)

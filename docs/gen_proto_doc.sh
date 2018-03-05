@@ -20,3 +20,6 @@ docker run --rm \
   -v $(pwd):/templates \
   pseudomuto/protoc-gen-doc \
   --doc_opt=/templates/markdownServiceFirst.tmpl,index.md
+
+# Manually fix index.md.
+echo "!!! REMEMBER to manually move additional settings table from RecognitionConfig description to below fields table (for better clarity). !!!"

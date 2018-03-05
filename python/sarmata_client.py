@@ -66,24 +66,21 @@ def create_audio_stream(args):
 if __name__ == '__main__':
     print("Sarmata client " + SARMATA_CLIENT_VERSION)
 
-    parser = ArgumentParser(description="""Main script for running tests of Techmo Sarmata ASR system""")
-    parser.add_argument("--address", help="Techmo Sarmata ASR service", required=True)
-    parser.add_argument("--define-grammar", help="Defines a new grammar to be cached by the service under ID "
-                                                 "given by `--grammar-name` option from data given by `--grammar` option",
-                        action='store_true')
-    parser.add_argument("--grammar-name", help="Name (ID) of the grammar in the service's grammar cache", default='',
-                        type=str)
-    parser.add_argument("--grammar", help="SRGS grammar file (ABNF or XML format accepted)")
-    parser.add_argument("--wave", help="Wave path, should be mono, 8kHz or 16kHz")
-    parser.add_argument("--mic", help="Use microphone as an audio source (instead of wave file)", action='store_true')
+    parser = ArgumentParser()
+    parser.add_argument("--service-address", dest="address", required=True, help="IP address and port (address:port) of a service the client will connect to.", type=str)
+    parser.add_argument("--define-grammar", help="Defines a new grammar to be cached by the service under ID given by `--grammar-name` option from data given by `--grammar` option.", action='store_true')
+    parser.add_argument("--grammar-name", help="Name (ID) of the grammar in the service's grammar cache.", default='', type=str)
+    parser.add_argument("--grammar", help="SRGS grammar file (ABNF or XML format accepted).")
+    parser.add_argument("--wave-path", dest="wave", help="Path to wave file with speech to be recognized. Should be mono, 8kHz or 16kHz.")
+    parser.add_argument("--mic", help="Use microphone as an audio source (instead of wave file).", action='store_true')
 
     # Timeouts, settings
-    parser.add_argument("--nbest", help="Maximal number of hypotheses", default=3, type=int)
-    parser.add_argument("--nomatch", help="Confidence acceptance threshold", default=0.2, type=float)
-    parser.add_argument("--speech-complete", help="MRCP v2 speech complete timeout [ms]", default=500, type=int)
-    parser.add_argument("--speech-incomplete", help="MRCP v2 speech incomplete timeout [ms]", default=3000, type=int)
-    parser.add_argument("--no-input", help="MRCP v2 no input timeout [ms]", default=5000, type=int)
-    parser.add_argument("--recognition-timeout", help="MRCP v2 recognition timeout [ms]", default=10000, type=int)
+    parser.add_argument("--max-alternatives", help="Maximum number of recognition hypotheses to be returned.", default=3, type=int)
+    parser.add_argument("--no-match-threshold", help="Confidence acceptance threshold.", default=0.2, type=float)
+    parser.add_argument("--speech-complete-timeout", help="MRCPv2 Speech-Complete-Timeout in milliseconds.", default=500, type=int)
+    parser.add_argument("--speech-incomplete-timeout", help="MRCPv2 Speech-Incomplete-Timeout in milliseconds.", default=3000, type=int)
+    parser.add_argument("--no-input-timeout", help="MRCPv2 No-Input-Timeout in milliseconds.", default=5000, type=int)
+    parser.add_argument("--recognition-timeout", help="MRCPv2 Recognition-Timeout in milliseconds.", default=10000, type=int)
 
     args = parser.parse_args()
 

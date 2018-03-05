@@ -27,22 +27,23 @@ class RequestIterator:
         request = sarmata_asr_pb2.RecognizeRequest(
             config=sarmata_asr_pb2.RecognitionConfig(
                 sample_rate_hertz=self.audio_stream.frame_rate(),
-                max_alternatives=self.settings.nbest
+                max_alternatives=self.settings.max_alternatives,
+                no_match_threshold=self.settings.no_match_threshold,
+                timeout_settings=sarmata_asr_pb2.TimeoutSettings(
+                    no_input_timeout=self.settings.no_input_timeout,
+                    recognition_timeout=self.settings.recognition_timeout,
+                    speech_complete_timeout=self.settings.speech_complete_timeout,
+                    speech_incomplete_timeout=self.settings.speech_incomplete_timeout
+                )
             )
         )
 
         if self.settings.grammar_name:
-            request.config.name = self.settings.grammar_name
+            request.config.grammar_name = self.settings.grammar_name
         elif self.settings.grammar:
-            request.config.data = self.settings.grammar
+            request.config.grammar_data = self.settings.grammar
         else:
             raise ValueError("Grammar must be loaded or grammar name must be set first")
-
-        settings_map = self.settings.to_map()
-        for key in settings_map:
-            cf = request.config.config.add()
-            cf.key = key
-            cf.value = str(settings_map[key])
 
         self.is_config_request = False
         return request
@@ -72,7 +73,7 @@ class SarmataRecognizer:
         return self.service.Recognize(requests_iterator, metadata=metadata)
 
     def define_grammar(self, grammar_name, grammar):
-        request = sarmata_asr_pb2.DefineGrammarRequest(name=grammar_name, grammar=grammar)
+        request = sarmata_asr_pb2.DefineGrammarRequest(grammar_name=grammar_name, grammar_data=grammar)
         response = self.service.DefineGrammar(request)
         return response
 

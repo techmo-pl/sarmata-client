@@ -146,6 +146,19 @@ message TimeoutSettings {
   // is an incomplete match of all active grammars. In this case, once the
   // timeout is triggered, the partial result is rejected (with
   // a Completion-Cause of "partial-match").
+  // The Speech-Incomplete-Timeout also applies when the speech prior to
+  // the silence is a complete match of an active grammar, but where it is
+  // possible to speak further and still match the grammar.  By contrast,
+  // the Speech-Complete-Timeout is used when the speech is a complete
+  // match to an active grammar and no further spoken words can continue
+  // to represent a match.
+  // A long Speech-Incomplete-Timeout value delays the result to the
+  // client and therefore makes the application's response to a user slow.
+  // A short Speech-Incomplete-Timeout may lead to an utterance being
+  // broken up inappropriately.
+  // The Speech-Incomplete-Timeout is usually longer than the Speech-
+  // Complete-Timeout to allow users to pause mid-utterance (for example,
+  // to breathe).
   int32 speech_incomplete_timeout = 4;
 }
 

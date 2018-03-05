@@ -13,7 +13,7 @@ namespace techmo { namespace sarmata {
         RemoteSession(const std::string & host);
         ~RemoteSession();
 
-        void PreDefineGrammar(const std::string & grammarName, const std::string & grammarData) override;
+        DefineGrammarResponse PreDefineGrammar(const std::string & grammarName, const std::string & grammarData) override;
 
         void Open(const std::string & token, const ASRSessionSettings & settings) override;
 

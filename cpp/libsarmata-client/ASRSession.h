@@ -9,11 +9,17 @@
 
 struct ASRSessionSettings
 {
+    std::string sessionId;
     std::map<std::string, std::string> config;
-    unsigned int sampleRateHertz = 0;
-    unsigned int maxAlternatives = 1;
+    int sampleRateHertz = 0;
+    int maxAlternatives = 1;
     std::string grammarName;
     std::string grammarData;
+    double noMatchThreshold = 0.0;
+    int noInputTimeout = 0;
+    int recognitionTimeout = 0;
+    int speechCompleteTimeout = 0;
+    int speechIncompleteTimeout = 0;
 };
 
 namespace techmo { namespace sarmata {
@@ -23,7 +29,7 @@ namespace techmo { namespace sarmata {
     public:
         virtual ~IASRSession() {}
 
-        virtual void PreDefineGrammar(const std::string& grammarName, const std::string& grammarData) {};
+        virtual DefineGrammarResponse PreDefineGrammar(const std::string& grammarName, const std::string& grammarData) {};
 
         virtual void Open(const std::string & token, const ASRSessionSettings & settings) = 0;
 
