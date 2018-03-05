@@ -6,7 +6,7 @@ class SarmataSettings:
     """Default settings for Techmo Sarmata ASR (timeouts and thresholds)"""
 
     def __init__(self):
-        self.nmax_alternativesbest = 3      # Maximum number of recognition hypotheses to be returned
+        self.max_alternatives = 3           # Maximum number of recognition hypotheses to be returned
         self.no_match_threshold = 0.2       # Confidence threshold for recognition / no-match
         self.speech_complete_timeout = 500  # ms - MRCP speech complete timeout
         self.speech_incomplete_timeout = 3000# ms - MRCP speech incomplete timeout
