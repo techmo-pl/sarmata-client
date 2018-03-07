@@ -31,7 +31,7 @@ namespace techmo { namespace sarmata {
 
         virtual DefineGrammarResponse PreDefineGrammar(const std::string& grammarName, const std::string& grammarData) {};
 
-        virtual void Open(const std::string & token, const ASRSessionSettings & settings) = 0;
+        virtual void Open(const ASRSessionSettings & settings) = 0;
 
         virtual void AddSamples(const std::vector<short> & data) = 0;
 

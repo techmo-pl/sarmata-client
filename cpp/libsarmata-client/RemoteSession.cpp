@@ -83,7 +83,7 @@ RecognitionConfig settings_to_config(const ASRSessionSettings & settings)
     return config;
 }
 
-void RemoteSession::Open(const std::string & /*token*//*TODO: what about that?*/, const ASRSessionSettings & settings)
+void RemoteSession::Open(const ASRSessionSettings & settings)
 {
     stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
     if (not settings.sessionId.empty()) { context_.AddMetadata("session_id", settings.sessionId); }

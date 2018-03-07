@@ -191,7 +191,7 @@ int main(int argc, char* argv[]) {
             }
 
             RemoteSession session(userOptions["service-address"].as<std::string>());
-            session.Open("", settings);
+            session.Open(settings);
             session.AddSamples(waveSamples);
             session.EndOfStream();
 

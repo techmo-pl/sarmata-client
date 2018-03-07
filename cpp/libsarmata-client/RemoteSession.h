@@ -15,7 +15,7 @@ namespace techmo { namespace sarmata {
 
         DefineGrammarResponse PreDefineGrammar(const std::string & grammarName, const std::string & grammarData) override;
 
-        void Open(const std::string & token, const ASRSessionSettings & settings) override;
+        void Open(const ASRSessionSettings & settings) override;
 
         void AddSamples(const std::vector<short> & data) override;
 
