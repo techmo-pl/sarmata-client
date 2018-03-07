@@ -11,6 +11,7 @@ penv.Append(CPPPATH = ['/home/skurzok/kaldi/kaldi-trunk/src'])
 
 penv.Append(LIBS = [
     'sarmata-client',
+    'boost_program_options',
     'pthread',
     'dl',
 ])

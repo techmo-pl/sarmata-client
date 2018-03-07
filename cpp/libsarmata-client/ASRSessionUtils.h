@@ -3,11 +3,12 @@
 
 #include <iostream>
 
-#include "asr_service.pb.h"
+#include "sarmata_asr.pb.h"
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
+
     std::ostream & operator<<(std::ostream & stream, ResponseStatus status);
-}
+
+}}
 
 #endif

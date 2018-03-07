@@ -11,15 +11,19 @@ print("************************************************")
 
 env = Environment(tools=['default'])
 
+boost_root = '/opt/boost_1_60_0/'
 grpc_root = '/opt/grpc_v1.7.2/'
 
+Export('boost_root')
 Export('grpc_root')
 
 env.Append(
     CPPPATH = [
+        boost_root,
         grpc_root + 'include',
         grpc_root + 'third_party/protobuf/src',
         os.getcwd(),
+        os.getcwd() + '/libsarmata-client',
     ]
 )
 
@@ -34,7 +38,7 @@ env.Append(
 
 env.Append(
     LIBPATH = [
-        '/opt/boost_1_60_0/stage/lib', 
+        boost_root + 'stage/lib', 
         grpc_root + 'third_party/protobuf/src/.libs', 
     ]
 )

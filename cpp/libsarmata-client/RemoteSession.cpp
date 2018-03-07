@@ -5,8 +5,7 @@
 #include <grpc++/client_context.h>
 #include <grpc++/create_channel.h>
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
 
 RemoteSession::RemoteSession(const std::string & host)
     : host_(host)
@@ -17,19 +16,19 @@ RemoteSession::~RemoteSession()
 {
     if (stream_)
     {
-		if(!samplesStreamCompleted_)
-		{
-			stream_->WritesDone();
-		}
+        if(!samplesStreamCompleted_)
+        {
+            stream_->WritesDone();
+        }
         stream_->Finish();
     }
 }
 
-void RemoteSession::PreDefineGrammar(const std::string & grammarName, const std::string & grammarData)
+DefineGrammarResponse RemoteSession::PreDefineGrammar(const std::string & grammarName, const std::string & grammarData)
 {
     DefineGrammarRequest request;
-    request.set_name(grammarName);
-    request.set_grammar(grammarData);
+    request.set_grammar_name(grammarName);
+    request.set_grammar_data(grammarData);
 
     DefineGrammarResponse response;
 
@@ -46,23 +45,54 @@ void RemoteSession::PreDefineGrammar(const std::string & grammarName, const std:
     {
         throw std::runtime_error(std::string("Grammar not created: ") + response.error());
     }
+
+    return response;
 }
 
-void RemoteSession::Open(const std::string & token, const ASRSessionSettings & settings)
+RecognitionConfig settings_to_config(const ASRSessionSettings & settings)
 {
-    stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
-    stream_ = stub_->Recognize(&context_);
-    samplesStreamCompleted_ = false;
-    
-    InitialRecognizeRequest initial;
-    for (const auto & field : settings)
+    RecognitionConfig config;
+
+    for (const auto & field : settings.config)
     {
-        auto * configField = initial.add_config();
+        auto * configField = config.add_additional_settings();
         configField->set_key(field.first);
         configField->set_value(field.second);
     }
+
+    config.set_sample_rate_hertz(settings.sampleRateHertz);
+    config.set_max_alternatives(settings.maxAlternatives);
+
+    if (not settings.grammarName.empty())
+    {
+        config.set_grammar_name(settings.grammarName);
+    }
+    else
+    {
+        config.set_grammar_data(settings.grammarData);
+    }
+
+    config.set_no_match_threshold(settings.noMatchThreshold);
+
+    auto timeouts = config.mutable_timeout_settings();
+    timeouts->set_no_input_timeout(settings.noInputTimeout);
+    timeouts->set_recognition_timeout(settings.recognitionTimeout);
+    timeouts->set_speech_complete_timeout(settings.speechCompleteTimeout);
+    timeouts->set_speech_incomplete_timeout(settings.speechIncompleteTimeout);
+
+    return config;
+}
+
+void RemoteSession::Open(const ASRSessionSettings & settings)
+{
+    stub_ = ASR::NewStub(grpc::CreateChannel(host_, grpc::InsecureChannelCredentials()));
+    if (not settings.sessionId.empty()) { context_.AddMetadata("session_id", settings.sessionId); }
+    stream_ = stub_->Recognize(&context_);
+    samplesStreamCompleted_ = false;
+
     RecognizeRequest request;
-    *request.mutable_initial_request() = initial;
+    *request.mutable_config() = settings_to_config(settings);
+
     bool ok = stream_->Write(request);
     if (!ok)
     {
@@ -76,7 +106,7 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
     {
         throw std::runtime_error("Stream closed");
     }
-	
+
     const auto chunk_size = 3*1024*1024/sizeof(short);   // less then size in https://github.com/grpc/grpc/blob/v1.0.x/src/core/lib/surface/channel.c#L84
     std::vector<short> chunk;
     chunk.reserve(chunk_size);
@@ -98,14 +128,11 @@ void RemoteSession::AddSamples(const std::vector<short> & data)
 
 void RemoteSession::sendSamples(const std::vector<short> & data)
 {
-    AudioRequest audio;
     std::string content(data.size() * sizeof(short), 0);
     std::memcpy( (char*)content.data(), data.data(), content.size());
-    audio.set_content(content);
-    audio.set_end_of_stream(false);
     
     RecognizeRequest request;
-    *request.mutable_audio_request() = audio;
+    request.set_audio_content(content);
     bool ok = stream_->Write(request);
     if (!ok)
     {
@@ -119,21 +146,13 @@ void RemoteSession::EndOfStream()
     {
         throw std::runtime_error("Stream closed");
     }
-	
-    AudioRequest audio;
-    audio.set_end_of_stream(true);
-    RecognizeRequest request;
-    *request.mutable_audio_request() = audio;
-    bool ok = stream_->Write(request);
-    if (!ok)
+
+    //closing stream
+    if (not stream_->WritesDone())
     {
         throw std::runtime_error("Stream closed");  //todo: add own exception hierarchy
     }
-	
-    //closing stream
-    stream_->WritesDone();
     samplesStreamCompleted_ = true;
-
 }
 
 RecognizeResponse RemoteSession::WaitForResponse(void)
@@ -159,4 +178,4 @@ RecognizeResponse RemoteSession::WaitForResponse(void)
     return response;
 }
 
-}
+}}

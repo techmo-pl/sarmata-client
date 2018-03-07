@@ -1,21 +1,21 @@
 #ifndef LIBSARMATA_REMOTE_SESSION_H
 #define LIBSARMATA_REMOTE_SESSION_H
 
-#include "asr_service.grpc.pb.h"
+#include "sarmata_asr.grpc.pb.h"
 
 #include "ASRSession.h"
 
-namespace sarmata
-{
+namespace techmo { namespace sarmata {
+
     class RemoteSession: public IASRSession
     {
     public:
         RemoteSession(const std::string & host);
         ~RemoteSession();
 
-        void PreDefineGrammar(const std::string & grammarName, const std::string & grammarData) override;
+        DefineGrammarResponse PreDefineGrammar(const std::string & grammarName, const std::string & grammarData) override;
 
-        void Open(const std::string & token, const ASRSessionSettings & settings) override;
+        void Open(const ASRSessionSettings & settings) override;
 
         void AddSamples(const std::vector<short> & data) override;
 
@@ -32,6 +32,6 @@ namespace sarmata
 		bool samplesStreamCompleted_;
     };
 
-}
+}}
 
 #endif

@@ -1,0 +1,275 @@
+// Techmo Sarmata ASR API
+// version: 2.0.0
+// authors: Dawid Skurzok, Paweł Jaciów
+// date:    2018-02-26
+//
+// Some content is derived from:
+// https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/cloud_speech.proto
+syntax = "proto3";
+
+package techmo.sarmata;
+
+// Service that implements Techmo Automatic-Speech-Recognition (ASR) API.
+//
+// Grammar persistence options:
+// - per alive connection: user opens special channel to service to define grammars, grammars are kept as long as connection is alive,
+// - predefined per user on disk: service keep predefined grammar as files on disk, loads it at startup,
+// - auto-cache: all grammars are cached automatically using its hash as ID, max number of cached grammars and prune policy must be defined.
+//
+// Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
+service ASR {
+  // Performs bidirectional streaming speech recognition using given grammar.
+  // Receive results while sending audio.
+  rpc Recognize(stream RecognizeRequest) returns (stream RecognizeResponse);
+  
+  // Defines grammar that will be stored for future use in recognitions
+  // requested by `Recognize`.
+  rpc DefineGrammar(DefineGrammarRequest) returns (DefineGrammarResponse);
+}
+
+// The top-level message sent by the client for the `Recognize` method.
+// Multiple `RecognizeRequest` messages are sent. The first message
+// must contain a `config` message and must not contain `audio` data.
+// All subsequent messages must contain `audio` data and must not contain a
+// `config` message.
+message RecognizeRequest {
+  // The request, which is either a config or audio content.
+  oneof request {
+    // [*One-of*] The `config` message provides information to the recognizer
+    // that specifies how to process the request.
+    RecognitionConfig config = 1;
+
+    // [*One-of*] The audio data to be recognized. Sequential chunks of audio data may be
+    // sent in sequential `RecognizeRequest` messages
+    // or whole data may be send in one message.
+    bytes audio_content = 2;
+  }
+}
+
+// Provides information to the recognizer that specifies
+// how to process the request.
+//
+// Additional configuration can be set via `additional_settings` field.
+// The following parameters are allowed to be set that way:
+//
+// | Parameter | Type | Default value | Description |
+// | --------- |:----:|:-------------:| ----------- |
+// | *beam-width* | `int` | 20 | With of the beam in log prob. |
+// | *speech-start* | `int` | 200 | Time of continuous speech before speech start event is passed [ms]. |
+// | *order-by-confidence* | `bool` | false | Order phrases by confidence instead of likelihood. |
+// | *keep-sil* | `bool` | false | Keep silence path even if it should be pruned or does not match grammar. |
+// | *enable-incomplete-match* | `bool` | true | Enable incomplete match. |
+// | *enable-incomplete-match-parse* | `bool` | false | Enable incomplete match. |
+// | *garbage-beam* | `int` | 5 | Beam on garbage model. |
+// | *show-sil* | `bool` | false | Show silence in recognitions. |
+// | *show-garbage* | `bool` | false | Show garbage in recognitions. |
+// | *flush-if-no-rec* | `bool` | true | Force recognition on end of stream. |
+// | *enable-garbage* | `bool` | false | Enable garbage model. |
+// | *use-vad* | `bool` | false | Use Voice Activity Detector. |
+// | *vad-sil-ll* | `double` | 1.0 | Likelihood assigned to silent frames by VAD. |
+// | *vad-nonsil-ll* | `double` | 0.0 | Likelihood assigned to non-silent frames by VAD. |
+//
+// The `RecognitionConfig` message must provide sample rate
+// in `sample_rate_hertz` field and a grammar as only one of `grammar_name`
+// or `grammar_data` fields.
+// Other fields are optional to set.
+message RecognitionConfig {
+  // [*Required*] grammar, which is either just a name of a grammar stored earlier with
+  // `DefineGrammar` method or a full grammar data.
+  oneof grammar {
+    // [*One-of*][*Required*] ID of a stored grammar to use for the recognition.
+    string grammar_name = 1;
+
+    // [*One-of*][*Required*] Grammar data to use for the recognition.
+    // Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
+    string grammar_data = 2;
+  }
+
+  // [*Required*] Sample rate in hertz of the audio data sent in all
+  // `RecognizeRequest` messages.
+  int32 sample_rate_hertz = 3;
+
+  // [*Optional*] Maximum number of recognition hypotheses to be returned.
+  // Specifically, the maximum number of `Phrase` messages
+  // within each `RecognizeResponse`.
+  // The server may return fewer than `max_alternatives`.
+  // If omitted, will return a maximum of one.
+  int32 max_alternatives = 4;
+
+  // [*Optional*] Confidence threshold to decide if phrase is correct.
+  // Results with score below the threshold are considered no match.
+  double no_match_threshold = 5;
+
+  // [*Optional*] MRCPv2-related timeout settings.
+  // Recognition will be interrupted when any of the timeouts is met.
+  TimeoutSettings timeout_settings = 6;
+
+  // [*Optional*] A means to provide additional configuration via request.
+  repeated ConfigField additional_settings = 7;
+}
+
+// MRCPv2-related timeout settings. The values are in milliseconds.
+message TimeoutSettings {
+  // [*Optional*] [No-Input-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.6)
+  // When recognition is started and there is no speech detected for
+  // a certain period of time, the recognizer can send a RECOGNITION-
+  // COMPLETE event to the client with a Completion-Cause of "no-input-
+  // timeout" and terminate the recognition operation.
+  int32 no_input_timeout = 1;
+
+  // [*Optional*] [Recognition-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.7)
+  // When recognition is started and there is no match for a certain
+  // period of time, the recognizer can send a RECOGNITION-COMPLETE event
+  // to the client and terminate the recognition operation.
+  int32 recognition_timeout = 2;
+
+  // [*Optional*] [Speech-Complete-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.15)
+  // Specifies the length of silence required following
+  // user speech before the speech recognizer finalizes a result (either
+  // accepting it or generating a no-match result). The Speech-Complete-
+  // Timeout value applies when the recognizer currently has a complete
+  // match against an active grammar, and specifies how long
+  // the recognizer MUST wait for more input before declaring a match. By
+  // contrast, the Speech-Incomplete-Timeout is used when the speech is
+  // an incomplete match to an active grammar.
+  // A long Speech-Complete-Timeout value delays the result to the client
+  // and therefore makes the application's response to a user slow.
+  // A short Speech-Complete-Timeout may lead to an utterance being broken
+  // up inappropriately. Reasonable speech complete timeout values are
+  // typically in the range of 300 milliseconds to 1000 milliseconds.
+  int32 speech_complete_timeout = 3;
+
+  // [*Optional*] [Speech-Incomplete-Timeout](https://tools.ietf.org/html/rfc6787#section-9.4.16)
+  // Specifies the required length of silence following
+  // user speech after which a recognizer finalizes a result.
+  // The incomplete timeout applies when the speech prior to the silence
+  // is an incomplete match of all active grammars. In this case, once the
+  // timeout is triggered, the partial result is rejected (with
+  // a Completion-Cause of "partial-match").
+  // The Speech-Incomplete-Timeout also applies when the speech prior to
+  // the silence is a complete match of an active grammar, but where it is
+  // possible to speak further and still match the grammar.  By contrast,
+  // the Speech-Complete-Timeout is used when the speech is a complete
+  // match to an active grammar and no further spoken words can continue
+  // to represent a match.
+  // A long Speech-Incomplete-Timeout value delays the result to the
+  // client and therefore makes the application's response to a user slow.
+  // A short Speech-Incomplete-Timeout may lead to an utterance being
+  // broken up inappropriately.
+  // The Speech-Incomplete-Timeout is usually longer than the Speech-
+  // Complete-Timeout to allow users to pause mid-utterance (for example,
+  // to breathe).
+  int32 speech_incomplete_timeout = 4;
+}
+
+// Provides a pair of configuration field name and value.
+message ConfigField {
+  // Name of configuration field.
+  string key = 1;
+
+  // Value of configuration field.
+  string value = 2;
+}
+
+// Indicates the status and type of message.
+enum ResponseStatus {
+  EMPTY = 0;                       // Should not be set.
+  SUCCESS = 1;                     // Phrase recognized.
+  PARTIAL_MATCH = 2;               // Recognized only beginning of the utterence.
+  NO_MATCH = 3;                    // No pharse recognized.
+  NO_INPUT_TIMEOUT = 4;            // No spech or no match in expected time.
+  GRAMMAR_LOAD_FAILURE = 5;        // Grammar connot be loaded.
+  GRAMMAR_COMPILATION_FAILURE = 6; // Grammar compilation error.
+  RECOGNIZER_ERROR = 7;            // Iternal error.
+  TOO_MUCH_SPEECH_TIMEOUT = 8;     // Speech to long.
+  CANCELLED = 9;                   // Recognition cancelled.
+  START_OF_INPUT = 10;             // Start of speech detected.
+  END_OF_AUDIO = 11;               // Finished processing.
+  SEMANTICS_FAILURE = 12;          // Error in Semantic Interpretation.
+}
+
+// `RecognizeResponse` is the only message returned to the client by
+// `Recognize`. A series of one or more `RecognizeResponse`
+// messages are streamed back to the client.
+message RecognizeResponse {
+  // Status and type of the message.
+  // Client should check statuses of received responses and
+  // stop sending audio data when received any of the following ones:
+  // - GRAMMAR_LOAD_FAILURE,
+  // - GRAMMAR_COMPILATION_FAILURE,
+  // - RECOGNIZER_ERROR,
+  // - SEMANTICS_FAILURE,
+  // which means that the service encountered an error (details in
+  // `error` field) and stopped processing incoming audio.
+  ResponseStatus status = 1;
+
+  // Status-specific error message. Is set only for statuses
+  // listed in `status` field's description as meaning errors.
+  string error = 2;
+
+  // Time of event (if applicable).
+  int32 event_time = 3;
+  
+  // List of recognized phrases ordered by probability.
+  repeated RecognizedPhrase results = 4;
+}
+
+// A single phrase recognition result.
+message RecognizedPhrase {
+  // A single word recognition result.
+  message RecognizedWord {
+    // Recognized word transcription.
+    string transcript = 1;
+    
+    // Word recognition confidence.
+    double confidence = 2;
+    
+    // Recognized word begin time.
+    int32 start = 3;
+    
+    // Recognized word end time.
+    int32 end = 4;
+    
+    // Logarithmic probability of the recognized word.
+    double logprob = 5;
+  }
+  
+  // Words in recognized phrase.
+  repeated RecognizedWord words = 1;
+  
+  // Confidence of phrase recognition.
+  double confidence = 2;
+  
+  // Is recognition considered correct (confidence above thresshold).
+  bool correct = 3;
+  
+  // Semantic Interpretation (in JSON).
+  string semantic_interpretation = 4;
+}
+
+// The top-level message sent by the client for the `DefineGrammar` method.
+// It will define grammar specified in `grammar_data` field for use in future recognitions
+// under ID given by `grammar_name` field.
+// When empty `grammar_data` is sent, the `grammar_name` grammar will be deleted from cache.
+message DefineGrammarRequest {
+  // [*Required*] Grammar ID to store the grammar for future use with.
+  string grammar_name = 1;
+
+  // [*Optional*] Grammar data to be stored for future use.
+  // Supported grammar formats are XML and ABNF as specified by [W3C SRGS](https://www.w3.org/TR/speech-grammar/).
+  // Empty (not set) requests deletion of the grammar cached with ID `grammar_name`.
+  string grammar_data = 2;
+}
+
+// The only message returned to the client by the `DefineGrammar` method. It
+// contains a grammar creation confirmation or an error message.
+message DefineGrammarResponse {
+  // Status and type of message.
+  ResponseStatus status = 1;
+
+  // Error message. Set only when an error occurred.
+  string error = 2;
+
+  // True if grammar was created.
+  bool ok = 3;
+}
