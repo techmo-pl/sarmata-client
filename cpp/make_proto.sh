@@ -11,7 +11,7 @@ if [ ! -x ${PROTOC} ]; then
     exit 1
 fi
 
-echo "Generating dictation C++ protobuf/grpc sources..."
+echo "Generating sarmata C++ protobuf/grpc sources..."
 path_i="../proto"
 path_o="libsarmata-client"
 ${PROTOC}   -I${path_i} \

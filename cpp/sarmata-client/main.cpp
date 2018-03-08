@@ -1,26 +1,18 @@
 #include <iostream>
-#include <thread>
-#include <chrono>
 #include <fstream>
 #include <sstream>
 
 #include <boost/program_options.hpp>
-#include <grpc/grpc.h>
-#include <grpc++/channel.h>
-#include <grpc++/client_context.h>
-#include <grpc++/create_channel.h>
-#include <grpc++/security/credentials.h>
+#include <google/protobuf/text_format.h>
 
-#include "libsarmata-client/sarmata_asr.grpc.pb.h"
-#include "libsarmata-client/RemoteSession.h"
-#include "libsarmata-client/ASRSessionUtils.h"
+#include "sarmata_client.h"
 #include "wave-utils.h"
 #include "VERSION.h"
 
 
 namespace po = boost::program_options;
 
-bool fileExists(const std::string & path) {
+bool FileExists(const std::string & path) {
     if (FILE * file = fopen(path.c_str(), "r")) {
         fclose(file);
         return true;
@@ -30,89 +22,47 @@ bool fileExists(const std::string & path) {
     }
 }
 
-std::string fileContent(const std::string & path) {
+std::string FileContent(const std::string & path) {
     std::ifstream t(path);
     std::stringstream buffer;
     buffer << t.rdbuf();
     return buffer.str();
 }
 
-std::map<std::string, std::string> loadSettings(const std::string & path) {
-    std::map<std::string, std::string> settings;
-    std::ifstream file(path);
-    std::string line;
-    std::cout << "Additional options: " << std::endl;
-    while (std::getline(file, line)) {
-        //if comment
-        if (line.size() && line[0] == '#') { continue; }
-        std::stringstream ss(line);
-        std::string key, value;
-        ss >> key >> value;
-        if (key.size() && value.size()) {
-            settings.emplace(key, value);
-            std::cout << "\"" << key << "\" : \"" << value << "\"" << std::endl;
-        }
-    }
-    return settings;
+std::string ProtobufMessageToString(const google::protobuf::Message & message) {
+    grpc::string out_str;
+    google::protobuf::TextFormat::PrintToString(message, &out_str);
+    return out_str;
 }
 
-int defineGrammar(const po::variables_map & userOptions) {
-    if (not userOptions.count("grammar-name")) {
-        std::cerr << "Option --grammar-name is required when running with --define-grammar." << std::endl;
-        return 1;
-    }
+techmo::sarmata::SarmataClientConfig CreateSarmataClientConfig(const po::variables_map& userOptions) {
+    techmo::sarmata::SarmataClientConfig config;
+    config.session_id = userOptions["session-id"].as<std::string>();
+    config.service_settings = userOptions["service-settings"].as<std::string>();
+    config.max_alternatives = userOptions["max-alternatives"].as<int>();
 
-    const auto grammarPath = userOptions["grammar"].as<std::string>();
-
-    if (not grammarPath.empty() and not fileExists(grammarPath)) {
-        std::cerr << "Grammar file does not exist: " << grammarPath << std::endl;
-        return 1;
-    }
-
-    const auto grammar = grammarPath.empty() ? "" : fileContent(grammarPath);
-
-    techmo::sarmata::RemoteSession session(userOptions["service-address"].as<std::string>());
-    const auto response = session.PreDefineGrammar(userOptions["grammar-name"].as<std::string>(), grammar);
-
-    std::cout << "DefineGrammar returned status " << response.status() << " " << response.error() << std::endl;
-
-    return not response.ok();
-}
-
-ASRSessionSettings CreateASRSessionSettings(const po::variables_map& userOptions, int sample_rate) {
-    ASRSessionSettings settings;
-
-    settings.sessionId = userOptions["session-id"].as<std::string>();
-
-    if (userOptions.count("service-settings")) {
-        settings.config = loadSettings(userOptions["service-settings"].as<std::string>());
-    }
-
-    settings.sampleRateHertz = sample_rate;
-    settings.maxAlternatives = userOptions["max-alternatives"].as<int>();
-
-    settings.grammarName = userOptions.count("grammar-name") ? userOptions["grammar-name"].as<std::string>() : "";
-    settings.grammarData = [&]() {
+    config.grammar_name = userOptions.count("grammar-name") ? userOptions["grammar-name"].as<std::string>() : "";
+    config.grammar_data = [&]() {
         const auto grammarPath = userOptions.count("grammar") ? userOptions["grammar"].as<std::string>() : "";
-        if (not grammarPath.empty() and not fileExists(grammarPath)) {
+        if (not grammarPath.empty() and not FileExists(grammarPath)) {
             std::cerr << "Grammar file does not exist: " << grammarPath << std::endl;
             return std::string{};
         }
-        return grammarPath.empty() ? std::string{} : fileContent(grammarPath);
+        return grammarPath.empty() ? std::string{} : FileContent(grammarPath);
     }();
 
-    if (userOptions.count("no-match-threshold")) { settings.noMatchThreshold = userOptions["no-match-threshold"].as<double>(); }
-    if (userOptions.count("no-input-timeout")) { settings.noInputTimeout = userOptions["no-input-timeout"].as<int>(); }
-    if (userOptions.count("recognition-timeout")) { settings.recognitionTimeout = userOptions["recognition-timeout"].as<int>(); }
-    if (userOptions.count("speech-complete-timeout")) { settings.speechCompleteTimeout = userOptions["speech-complete-timeout"].as<int>(); }
-    if (userOptions.count("speech-incomplete-timeout")) { settings.speechIncompleteTimeout = userOptions["speech-incomplete-timeout"].as<int>(); }
+    if (userOptions.count("no-match-threshold")) { config.no_match_threshold = userOptions["no-match-threshold"].as<double>(); }
+    if (userOptions.count("no-input-timeout")) { config.no_input_timeout = userOptions["no-input-timeout"].as<int>(); }
+    if (userOptions.count("recognition-timeout")) { config.recognition_timeout = userOptions["recognition-timeout"].as<int>(); }
+    if (userOptions.count("speech-complete-timeout")) { config.speech_complete_timeout = userOptions["speech-complete-timeout"].as<int>(); }
+    if (userOptions.count("speech-incomplete-timeout")) { config.speech_incomplete_timeout = userOptions["speech-incomplete-timeout"].as<int>(); }
 
-    return settings;
+    return config;
 }
 
 po::options_description CreateOptionsDescription(void) {
     // command line options
-    po::options_description optionsDescription("Dictation ASR gRPC client options:");
+    po::options_description optionsDescription("Sarmata ASR gRPC client options:");
     optionsDescription.add_options()
             ("help", "Print help message.")
             ("service-address", po::value<std::string>()->required(),
@@ -137,33 +87,38 @@ po::options_description CreateOptionsDescription(void) {
              "MRCPv2 Speech-Complete-Timeout in milliseconds.")
             ("speech-incomplete-timeout", po::value<int>(),
              "MRCPv2 Speech-Incomplete-Timeout in milliseconds.")
-            ("define-grammar", "If present, will perform DefineGrammar call for given --grammar-name"
+            ("define-grammar", "If present, will perform DefineGrammar call for given --grammar-name "
              "and --grammar (will not call Recognize).");
     return optionsDescription;
 }
 
 int main(int argc, char* argv[]) {
-    using grpc::Channel;
-    using grpc::ClientContext;
-    using grpc::Status;
-    using grpc::ClientReaderWriter;
-    using namespace techmo::sarmata;
-
     try {
         po::options_description optionsDescription(CreateOptionsDescription());
         po::variables_map userOptions;
         po::store(po::command_line_parser(argc, argv).options(optionsDescription).run(), userOptions);
-        po::notify(userOptions);
-
         std::cout << "Sarmata ASR gRPC client " << LIBSARMATA_CLIENT_VERSION << std::endl;
-
         if (userOptions.count("help")) {
             std::cout << optionsDescription;
             return 0;
         }
+        po::notify(userOptions);
+
+        const techmo::sarmata::SarmataClientConfig config = CreateSarmataClientConfig(userOptions);
+        techmo::sarmata::SarmataClient sarmata_client{ userOptions["service-address"].as<std::string>() };
 
         if (userOptions.count("define-grammar")) {
-            return defineGrammar(userOptions);
+            if (config.grammar_name.empty()) {
+                std::cerr << "Option --grammar-name is required when running with --define-grammar." << std::endl;
+                return 1;
+            }
+
+            const auto response = sarmata_client.DefineGrammar(config);
+
+            std::cout << ProtobufMessageToString(response) << std::endl;
+            std::cout << "DefineGrammar returned status " << response.status() << " " << response.error() << std::endl;
+
+            return not response.ok();
         }
 
         if (userOptions.count("wave-path")) {
@@ -174,7 +129,7 @@ int main(int argc, char* argv[]) {
             }
 
             const auto wavePath = userOptions["wave-path"].as<std::string>();
-            if (not fileExists(wavePath)) {
+            if (not FileExists(wavePath)) {
                 std::cerr << "Wave file does not exist: " << wavePath << std::endl;
                 return 1;
             }
@@ -183,47 +138,20 @@ int main(int argc, char* argv[]) {
             std::vector<short> waveSamples(wave.audioBytes.size() / sizeof(short), 0);
             std::memcpy((char*)waveSamples.data(), wave.audioBytes.data(), wave.audioBytes.size());
 
-            const ASRSessionSettings settings = CreateASRSessionSettings(userOptions, wave.header.samplesPerSec);
-
-            if (settings.grammarName.empty() && settings.grammarData.empty()) {
+            if (config.grammar_name.empty() && config.grammar_data.empty()) {
                 std::cerr << "Neither grammar name nor grammar data specified (both are empty)." << std::endl;
                 return 1;
             }
 
-            RemoteSession session(userOptions["service-address"].as<std::string>());
-            session.Open(settings);
-            session.AddSamples(waveSamples);
-            session.EndOfStream();
+            const auto responses = sarmata_client.Recognize(config, wave.header.samplesPerSec, wave.audioBytes);
 
-            RecognizeResponse response;
-            do {
-                response = session.WaitForResponse();
-                if (response.status() != EMPTY) {
-                    std::cout << "event " << response.status() << " at " << response.event_time() << std::endl;
-                }
-                if (response.results().size()) {
-                    auto showPath = [](const RecognizedPhrase & path) {
-                        using namespace std;
-                        int w = 0, gp = 0, gs = 0;
-                        for (const auto & word : path.words()) {
-                            cout << ++w << ". " << word.transcript() << " [" << word.start() << " - " << word.end() << "] (" << word.logprob() << ") " << word.confidence() <<  endl;
-                        }
-                        if (path.semantic_interpretation().size()) {
-                            cout << "SI:" << endl;
-                            cout << path.semantic_interpretation() << endl;
-                        }
-                        cout << "Path confidence: " << path.confidence() << endl;
-                    };
-                    for (int i = 0; i < response.results().size(); i++) {
-                        std::cout << "paths nr " << i + 1 << ":" << std::endl;
-                        showPath(response.results(i));
-                    }
-                }
-            } while (response.status() != EMPTY && response.status() != END_OF_AUDIO);
+            for (const auto& response : responses) {
+                std::cout << ProtobufMessageToString(response) << std::endl;
+            }
         }
     }
     catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         return 1;
     }
 
