@@ -1,1 +1,1 @@
-static constexpr auto LIBSARMATA_CLIENT_VERSION = "2.0.0";
+static constexpr auto LIBSARMATA_CLIENT_VERSION = "2.1.0";

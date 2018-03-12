@@ -1,9 +1,0 @@
-Import("env")
-
-penv = env.Clone()
-
-myfiles = Glob('*.cpp') + Glob('*.cc')
-
-myobjects = penv.Object(myfiles)
-
-penv.StaticLibrary('libsarmata-client', myfiles)
