@@ -35,8 +35,8 @@ std::string ProtobufMessageToString(const google::protobuf::Message & message) {
     return out_str;
 }
 
-techmo::sarmata::SarmataClientConfig CreateSarmataClientConfig(const po::variables_map& userOptions) {
-    techmo::sarmata::SarmataClientConfig config;
+techmo::sarmata::SarmataSessionConfig CreateSarmataSessionConfig(const po::variables_map & userOptions) {
+    techmo::sarmata::SarmataSessionConfig config;
     config.session_id = userOptions["session-id"].as<std::string>();
     config.service_settings = userOptions["service-settings"].as<std::string>();
     config.max_alternatives = userOptions["max-alternatives"].as<int>();
@@ -58,6 +58,55 @@ techmo::sarmata::SarmataClientConfig CreateSarmataClientConfig(const po::variabl
     if (userOptions.count("speech-incomplete-timeout")) { config.speech_incomplete_timeout = userOptions["speech-incomplete-timeout"].as<int>(); }
 
     return config;
+}
+
+int DefineGrammar(const techmo::sarmata::SarmataSessionConfig & config, const techmo::sarmata::SarmataClient & sarmata_client) {
+    if (config.grammar_name.empty()) {//bad usage
+        std::cerr << "Option --grammar-name is required when running with --define-grammar." << std::endl;
+        return 1;
+    }
+
+    std::cout << (config.grammar_data.empty()
+                ? "Deleting grammar "
+                : "Defining grammar ")
+            << config.grammar_name << std::endl;
+
+    const auto response = sarmata_client.DefineGrammar(config);
+
+    std::cout << ProtobufMessageToString(response) << std::endl;
+    std::cout << "DefineGrammar returned status " << response.status() << " " << response.error() << std::endl;
+
+    return not response.ok();
+}
+
+int Recognize(const po::variables_map & userOptions, const techmo::sarmata::SarmataSessionConfig & config, const techmo::sarmata::SarmataClient & sarmata_client) {
+    if (not (userOptions.count("grammar") || userOptions.count("grammar-name"))) {//bad usage
+        std::cerr << "Options --grammar-name or --grammar are required when running with --wave-path." << std::endl;
+        return 1;
+    }
+
+    const auto wavePath = userOptions["wave-path"].as<std::string>();
+    if (not FileExists(wavePath)) {
+        std::cerr << "Wave file does not exist: " << wavePath << std::endl;
+        return 1;
+    }
+
+    const auto wave = ReadWaveFile(userOptions["wave-path"].as<std::string>());
+    std::vector<short> waveSamples(wave.audioBytes.size() / sizeof(short), 0);
+    std::memcpy((char*)waveSamples.data(), wave.audioBytes.data(), wave.audioBytes.size());
+
+    if (config.grammar_name.empty() && config.grammar_data.empty()) {
+        std::cerr << "Neither grammar name nor grammar data specified (both are empty)." << std::endl;
+        return 1;
+    }
+
+    const auto responses = sarmata_client.Recognize(config, wave.header.samplesPerSec, wave.audioBytes);
+
+    for (const auto& response : responses) {
+        std::cout << ProtobufMessageToString(response) << std::endl;
+    }
+
+    return 0;
 }
 
 po::options_description CreateOptionsDescription(void) {
@@ -92,7 +141,7 @@ po::options_description CreateOptionsDescription(void) {
     return optionsDescription;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char * argv[]) {
     try {
         po::options_description optionsDescription(CreateOptionsDescription());
         po::variables_map userOptions;
@@ -104,50 +153,14 @@ int main(int argc, char* argv[]) {
         }
         po::notify(userOptions);
 
-        const techmo::sarmata::SarmataClientConfig config = CreateSarmataClientConfig(userOptions);
+        const techmo::sarmata::SarmataSessionConfig config = CreateSarmataSessionConfig(userOptions);
         techmo::sarmata::SarmataClient sarmata_client{ userOptions["service-address"].as<std::string>() };
 
         if (userOptions.count("define-grammar")) {
-            if (config.grammar_name.empty()) {
-                std::cerr << "Option --grammar-name is required when running with --define-grammar." << std::endl;
-                return 1;
-            }
-
-            const auto response = sarmata_client.DefineGrammar(config);
-
-            std::cout << ProtobufMessageToString(response) << std::endl;
-            std::cout << "DefineGrammar returned status " << response.status() << " " << response.error() << std::endl;
-
-            return not response.ok();
+            return DefineGrammar(config, sarmata_client);
         }
-
-        if (userOptions.count("wave-path")) {
-            if (not (userOptions.count("grammar") || userOptions.count("grammar-name"))) {//bad usage
-                std::cerr << "Usage (Recognize): " << argv[0] << " --service-address host:address --wave-path /path/to/audio.wav --grammar-name name"
-                        "\n   or " << argv[0] << " --service-address host:address --wave-path /path/to/audio.wav --grammar data" << std::endl;
-                return 1;
-            }
-
-            const auto wavePath = userOptions["wave-path"].as<std::string>();
-            if (not FileExists(wavePath)) {
-                std::cerr << "Wave file does not exist: " << wavePath << std::endl;
-                return 1;
-            }
-
-            const auto wave = ReadWaveFile(userOptions["wave-path"].as<std::string>());
-            std::vector<short> waveSamples(wave.audioBytes.size() / sizeof(short), 0);
-            std::memcpy((char*)waveSamples.data(), wave.audioBytes.data(), wave.audioBytes.size());
-
-            if (config.grammar_name.empty() && config.grammar_data.empty()) {
-                std::cerr << "Neither grammar name nor grammar data specified (both are empty)." << std::endl;
-                return 1;
-            }
-
-            const auto responses = sarmata_client.Recognize(config, wave.header.samplesPerSec, wave.audioBytes);
-
-            for (const auto& response : responses) {
-                std::cout << ProtobufMessageToString(response) << std::endl;
-            }
+        else if (userOptions.count("wave-path")) {
+            return Recognize(userOptions, config, sarmata_client);
         }
     }
     catch (const std::exception& e) {

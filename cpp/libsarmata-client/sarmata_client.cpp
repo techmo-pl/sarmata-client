@@ -10,7 +10,102 @@
 
 namespace techmo { namespace sarmata {
 
-void read_service_settings_option(const SarmataClientConfig& config, RecognitionConfig& recognition_config) {
+// Forward declarations
+std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content);
+bool error_response(const RecognizeResponse& response);
+std::string grpc_status_to_string(const grpc::Status& status);
+
+
+DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& config) const {
+    grpc::ClientContext context;
+    if (not config.session_id.empty()) {
+        context.AddMetadata("session_id", config.session_id);
+    }
+
+    auto stub = ASR::NewStub(grpc::CreateChannel(service_address_, grpc::InsecureChannelCredentials()));
+
+    DefineGrammarRequest request;
+    request.set_grammar_name(config.grammar_name);
+    request.set_grammar_data(config.grammar_data);
+
+    DefineGrammarResponse response;
+
+    const grpc::Status status = stub->DefineGrammar(&context, request, &response);
+
+    if (not status.ok())
+    {
+        std::cerr << "DefineGrammar RPC failed with status " << grpc_status_to_string(status) << std::endl;
+    }
+
+    return response;
+}
+
+
+std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
+    grpc::ClientContext context;
+    if (not config.session_id.empty()) {
+        context.AddMetadata("session_id", config.session_id);
+    }
+
+    auto stub = ASR::NewStub(grpc::CreateChannel(service_address_, grpc::InsecureChannelCredentials()));
+
+    auto stream = stub->Recognize(&context);
+
+    const auto requests = build_request(config, audio_sample_rate_hz, audio_byte_content);
+
+    const auto& config_request = requests.front();
+    stream->Write(config_request);
+
+    // When received an error response from the server, the server will not process
+    // additional audio (although it may subsequently return additional results).
+    // The client should stop sending additional audio, half-close the gRPC connection,
+    // and wait for any additional results until the server closes the gRPC connection.
+    std::atomic<bool> half_closed_stream{false};
+
+    std::thread writer([&half_closed_stream, &stream, &requests] {
+        for (auto i = 1; i < requests.size(); ++i) {
+            if (half_closed_stream or not stream->Write(requests[i])) {
+                break;
+            }
+        }
+        if (not half_closed_stream) {
+            half_closed_stream = true;
+            stream->WritesDone();
+        }
+    });
+
+    const auto responses = [&half_closed_stream, &stream, &writer] {
+        std::vector<RecognizeResponse> received_responses;
+        RecognizeResponse received_response;
+        while (stream->Read(&received_response)) {
+            if (error_response(received_response)) {
+                if (not half_closed_stream) {
+                    half_closed_stream = true;
+                    stream->WritesDone();
+                }
+            }
+            else {
+                std::cout << "Received response." << std::endl;
+            }
+            received_responses.push_back(received_response);
+        }
+        if (writer.joinable()) {
+            writer.join();
+        }
+        return received_responses;
+    }();
+
+    const grpc::Status status = stream->Finish();
+
+    if (not status.ok()) {
+        std::cerr << "StreamingRecognize RPC failed with status " << grpc_status_to_string(status) << std::endl;
+    }
+
+    return responses;
+}
+
+
+void read_service_settings_option(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
     const auto& settings_string = config.service_settings;
 
     // split by ';'
@@ -48,7 +143,7 @@ void read_service_settings_option(const SarmataClientConfig& config, Recognition
     }
 }
 
-void build_recognition_config(const SarmataClientConfig& config, unsigned int sample_rate_hertz, RecognitionConfig& recognition_config) {
+void build_recognition_config(const SarmataSessionConfig& config, unsigned int sample_rate_hertz, RecognitionConfig& recognition_config) {
     recognition_config.set_max_alternatives(config.max_alternatives);
     recognition_config.set_sample_rate_hertz(sample_rate_hertz);
     recognition_config.set_no_match_threshold(config.no_match_threshold);
@@ -71,7 +166,7 @@ void build_recognition_config(const SarmataClientConfig& config, unsigned int sa
     }
 }
 
-std::vector<RecognizeRequest> build_request(const SarmataClientConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content)
+std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content)
 {
     RecognizeRequest request;
     build_recognition_config(config, audio_sample_rate_hz, *request.mutable_config());
@@ -138,91 +233,6 @@ std::string grpc_status_to_string(const grpc::Status& status) {
     }();
 
     return status_string + " (" + std::to_string(status.error_code()) + ") " + status.error_message();
-}
-
-
-DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataClientConfig& config) const {
-    grpc::ClientContext context;
-    if (not config.session_id.empty()) {
-        context.AddMetadata("session_id", config.session_id);
-    }
-
-    auto stub = ASR::NewStub(grpc::CreateChannel(service_address_, grpc::InsecureChannelCredentials()));
-
-    DefineGrammarRequest request;
-    request.set_grammar_name(config.grammar_name);
-    request.set_grammar_data(config.grammar_data);
-
-    DefineGrammarResponse response;
-
-    const grpc::Status status = stub->DefineGrammar(&context, request, &response);
-
-    if (not status.ok())
-    {
-        std::cerr << "DefineGrammar RPC failed with status " << grpc_status_to_string(status) << std::endl;
-    }
-
-    return response;
-}
-
-
-std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataClientConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
-    grpc::ClientContext context;
-    if (not config.session_id.empty()) {
-        context.AddMetadata("session_id", config.session_id);
-    }
-
-    auto stub = ASR::NewStub(grpc::CreateChannel(service_address_, grpc::InsecureChannelCredentials()));
-
-    auto stream = stub->Recognize(&context);
-
-    const auto requests = build_request(config, audio_sample_rate_hz, audio_byte_content);
-
-    const auto& config_request = requests.front();
-    stream->Write(config_request);
-
-    std::atomic<bool> half_closed_stream{false};
-
-    std::thread writer([&half_closed_stream, &stream, &requests] {
-        for (auto i = 1; i < requests.size(); ++i) {
-            if (half_closed_stream or not stream->Write(requests[i])) {
-                break;
-            }
-        }
-        if (not half_closed_stream) {
-            half_closed_stream = true;
-            stream->WritesDone();
-        }
-    });
-
-    const auto responses = [&half_closed_stream, &stream, &writer] {
-        std::vector<RecognizeResponse> received_responses;
-        RecognizeResponse received_response;
-        while (stream->Read(&received_response)) {
-            if (error_response(received_response)) {
-                if (not half_closed_stream) {
-                    half_closed_stream = true;
-                    stream->WritesDone();
-                }
-            }
-            else {
-                std::cout << "Received response." << std::endl;
-            }
-            received_responses.push_back(received_response);
-        }
-        if (writer.joinable()) {
-            writer.join();
-        }
-        return received_responses;
-    }();
-
-    const grpc::Status status = stream->Finish();
-
-    if (not status.ok()) {
-        std::cerr << "StreamingRecognize RPC failed with status " << grpc_status_to_string(status) << std::endl;
-    }
-
-    return responses;
 }
 
 }}
