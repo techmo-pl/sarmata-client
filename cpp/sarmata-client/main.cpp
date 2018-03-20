@@ -115,7 +115,7 @@ int DefineGrammar(const techmo::sarmata::SarmataSessionConfig & config, const te
     return not response.ok();
 }
 
-int Recognize(const po::variables_map & userOptions, const techmo::sarmata::SarmataSessionConfig & config, const techmo::sarmata::SarmataClient & sarmata_client) {
+int Recognize(const po::variables_map & userOptions, techmo::sarmata::SarmataSessionConfig & config, const techmo::sarmata::SarmataClient & sarmata_client) {
     if (not (userOptions.count("grammar") || userOptions.count("grammar-name"))) {//bad usage
         std::cerr << "Options --grammar-name or --grammar are required when running with --wave-path." << std::endl;
         return 1;
@@ -136,7 +136,8 @@ int Recognize(const po::variables_map & userOptions, const techmo::sarmata::Sarm
         return 1;
     }
 
-    const auto responses = sarmata_client.Recognize(config, wave.header.samplesPerSec, wave.audioBytes);
+    config.audio_sample_rate_hz = wave.header.samplesPerSec;
+    const auto responses = sarmata_client.Recognize(config, wave.audioBytes);
 
     for (const auto& response : responses) {
         std::cout << ProtobufMessageToString(response) << std::endl;
@@ -189,7 +190,7 @@ int main(int argc, char * argv[]) {
         }
         po::notify(userOptions);
 
-        const techmo::sarmata::SarmataSessionConfig config = CreateSarmataSessionConfig(userOptions);
+        techmo::sarmata::SarmataSessionConfig config = CreateSarmataSessionConfig(userOptions);
         techmo::sarmata::SarmataClient sarmata_client{ userOptions["service-address"].as<std::string>() };
 
         if (userOptions.count("define-grammar")) {

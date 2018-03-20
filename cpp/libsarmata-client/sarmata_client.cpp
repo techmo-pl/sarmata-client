@@ -11,7 +11,7 @@
 namespace techmo { namespace sarmata {
 
 // Forward declarations
-std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content);
+std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, const std::string& audio_byte_content);
 bool error_response(const RecognizeResponse& response);
 std::string grpc_status_to_string(const grpc::Status& status);
 
@@ -41,7 +41,7 @@ DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& c
 }
 
 
-std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
+std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConfig& config, const std::string& audio_byte_content) const {
     grpc::ClientContext context;
     if (not config.session_id.empty()) {
         context.AddMetadata("session_id", config.session_id);
@@ -51,7 +51,7 @@ std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConf
 
     auto stream = stub->Recognize(&context);
 
-    const auto requests = build_request(config, audio_sample_rate_hz, audio_byte_content);
+    const auto requests = build_request(config, audio_byte_content);
 
     const auto& config_request = requests.front();
     stream->Write(config_request);
@@ -113,9 +113,9 @@ void fill_additional_settings(const SarmataSessionConfig& config, RecognitionCon
     }
 }
 
-void build_recognition_config(const SarmataSessionConfig& config, unsigned int sample_rate_hertz, RecognitionConfig& recognition_config) {
+void build_recognition_config(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
+    recognition_config.set_sample_rate_hertz(config.audio_sample_rate_hz);
     recognition_config.set_max_alternatives(config.max_alternatives);
-    recognition_config.set_sample_rate_hertz(sample_rate_hertz);
     recognition_config.set_no_match_threshold(config.no_match_threshold);
 
     if (not config.grammar_name.empty()) {
@@ -136,16 +136,16 @@ void build_recognition_config(const SarmataSessionConfig& config, unsigned int s
     }
 }
 
-std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content)
+std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, const std::string& audio_byte_content)
 {
     RecognizeRequest request;
-    build_recognition_config(config, audio_sample_rate_hz, *request.mutable_config());
+    build_recognition_config(config, *request.mutable_config());
 
     std::vector<RecognizeRequest> requests;
     requests.push_back(request);
 
     unsigned int frame_length = 20;//milliseconds [ms]
-    unsigned int frame_size = frame_length * audio_sample_rate_hz / 1000;//samples
+    unsigned int frame_size = frame_length * config.audio_sample_rate_hz / 1000;//samples
     for (auto i = 0; i < audio_byte_content.length(); i += frame_size)
     {
         RecognizeRequest request;
