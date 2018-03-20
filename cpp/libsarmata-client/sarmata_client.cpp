@@ -105,41 +105,11 @@ std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConf
 }
 
 
-void read_service_settings_option(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
-    const auto& settings_string = config.service_settings;
-
-    // split by ';'
-    std::vector<std::string> settings_lines;
-    //boost::split(settings_lines, settings_string, boost::is_any_of(";"));
-    std::stringstream settings_stream(settings_string);
-    std::string setting_line;
-    while (std::getline(settings_stream, setting_line, ';')) {
-        settings_lines.push_back(setting_line);
-    }
-
-    std::cout << "Passing session settings:" << std::endl;
-    for (const auto & line : settings_lines)
-    {
-        // split by '='
-        std::vector<std::string> key_value;
-        //boost::split(key_value, line, boost::is_any_of("="));
-        std::stringstream key_value_steam(line);
-        std::string field;
-        while (std::getline(key_value_steam, field, '=')) {
-            key_value.push_back(field);
-        }
-
-        if (key_value.size() == 2)
-        {
-            auto field = recognition_config.add_additional_settings();
-            field->set_key(key_value[0]);
-            field->set_value(key_value[1]);
-            std::cout << "key: " << field->key() << " | value: " << field->value() << std::endl;
-        }
-        else
-        {
-            std::cout << "Skipping invalid session settings line: " << line << std::endl;
-        }
+void fill_additional_settings(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
+    for (const auto& entry : config.service_settings) {
+        auto field = recognition_config.add_additional_settings();
+        field->set_key(entry.first);
+        field->set_value(entry.second);
     }
 }
 
@@ -162,7 +132,7 @@ void build_recognition_config(const SarmataSessionConfig& config, unsigned int s
     timeouts->set_speech_incomplete_timeout(config.speech_incomplete_timeout);
 
     if (not config.service_settings.empty()) {
-        read_service_settings_option(config, recognition_config);
+        fill_additional_settings(config, recognition_config);
     }
 }
 
