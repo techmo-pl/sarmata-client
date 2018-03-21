@@ -9,10 +9,11 @@ namespace techmo { namespace sarmata {
 struct SarmataSessionConfig {
     std::string session_id = "";        // Session ID to be passed to the service. If not specified, the service will generate a default session ID itself.
                                         // Session ID is the best way to match log's from client application with these on server side.
-    std::string service_settings = "";  // Semicolon-separated list of key=value pairs defining settings to be sent to service via gRPC request.
+    std::map<std::string, std::string> service_settings; // A map of <key, value> pairs defining settings to be sent to service via gRPC request.
                                         // For a full list of accepted settings, see `RecognitionConfig`'s description in `proto/sarmata_asr.proto`.
     std::string grammar_name = "";      // Name (ID) of the grammar in the service's grammar cache.
     std::string grammar_data = "";      // SRGS grammar data (ABNF or XML format accepted).
+    int audio_sample_rate_hz = 0;       // Sampling frequency in hertz of audio data.
     int max_alternatives = 1;           // Maximum number of recognition hypotheses to be returned.
     double no_match_threshold = 0.0;    // Confidence acceptance threshold.
     int no_input_timeout = 0;           // MRCPv2 No-Input-Timeout in milliseconds.
@@ -27,7 +28,7 @@ public:
 
     DefineGrammarResponse DefineGrammar(const SarmataSessionConfig& config) const;
 
-    std::vector<RecognizeResponse> Recognize(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const;
+    std::vector<RecognizeResponse> Recognize(SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const;
 
 private:
     SarmataClient(); // Disable default constructor.

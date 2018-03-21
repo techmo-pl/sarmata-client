@@ -11,7 +11,7 @@
 namespace techmo { namespace sarmata {
 
 // Forward declarations
-std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content);
+std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, const std::string& audio_byte_content);
 bool error_response(const RecognizeResponse& response);
 std::string grpc_status_to_string(const grpc::Status& status);
 
@@ -41,7 +41,7 @@ DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& c
 }
 
 
-std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
+std::vector<RecognizeResponse> SarmataClient::Recognize(SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
     grpc::ClientContext context;
     if (not config.session_id.empty()) {
         context.AddMetadata("session_id", config.session_id);
@@ -51,7 +51,8 @@ std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConf
 
     auto stream = stub->Recognize(&context);
 
-    const auto requests = build_request(config, audio_sample_rate_hz, audio_byte_content);
+    config.audio_sample_rate_hz = audio_sample_rate_hz;
+    const auto requests = build_request(config, audio_byte_content);
 
     const auto& config_request = requests.front();
     stream->Write(config_request);
@@ -105,47 +106,17 @@ std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConf
 }
 
 
-void read_service_settings_option(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
-    const auto& settings_string = config.service_settings;
-
-    // split by ';'
-    std::vector<std::string> settings_lines;
-    //boost::split(settings_lines, settings_string, boost::is_any_of(";"));
-    std::stringstream settings_stream(settings_string);
-    std::string setting_line;
-    while (std::getline(settings_stream, setting_line, ';')) {
-        settings_lines.push_back(setting_line);
-    }
-
-    std::cout << "Passing session settings:" << std::endl;
-    for (const auto & line : settings_lines)
-    {
-        // split by '='
-        std::vector<std::string> key_value;
-        //boost::split(key_value, line, boost::is_any_of("="));
-        std::stringstream key_value_steam(line);
-        std::string field;
-        while (std::getline(key_value_steam, field, '=')) {
-            key_value.push_back(field);
-        }
-
-        if (key_value.size() == 2)
-        {
-            auto field = recognition_config.add_additional_settings();
-            field->set_key(key_value[0]);
-            field->set_value(key_value[1]);
-            std::cout << "key: " << field->key() << " | value: " << field->value() << std::endl;
-        }
-        else
-        {
-            std::cout << "Skipping invalid session settings line: " << line << std::endl;
-        }
+void fill_additional_settings(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
+    for (const auto& entry : config.service_settings) {
+        auto field = recognition_config.add_additional_settings();
+        field->set_key(entry.first);
+        field->set_value(entry.second);
     }
 }
 
-void build_recognition_config(const SarmataSessionConfig& config, unsigned int sample_rate_hertz, RecognitionConfig& recognition_config) {
+void build_recognition_config(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
+    recognition_config.set_sample_rate_hertz(config.audio_sample_rate_hz);
     recognition_config.set_max_alternatives(config.max_alternatives);
-    recognition_config.set_sample_rate_hertz(sample_rate_hertz);
     recognition_config.set_no_match_threshold(config.no_match_threshold);
 
     if (not config.grammar_name.empty()) {
@@ -162,20 +133,20 @@ void build_recognition_config(const SarmataSessionConfig& config, unsigned int s
     timeouts->set_speech_incomplete_timeout(config.speech_incomplete_timeout);
 
     if (not config.service_settings.empty()) {
-        read_service_settings_option(config, recognition_config);
+        fill_additional_settings(config, recognition_config);
     }
 }
 
-std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content)
+std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, const std::string& audio_byte_content)
 {
     RecognizeRequest request;
-    build_recognition_config(config, audio_sample_rate_hz, *request.mutable_config());
+    build_recognition_config(config, *request.mutable_config());
 
     std::vector<RecognizeRequest> requests;
     requests.push_back(request);
 
     unsigned int frame_length = 20;//milliseconds [ms]
-    unsigned int frame_size = frame_length * audio_sample_rate_hz / 1000;//samples
+    unsigned int frame_size = frame_length * config.audio_sample_rate_hz / 1000;//samples
     for (auto i = 0; i < audio_byte_content.length(); i += frame_size)
     {
         RecognizeRequest request;
