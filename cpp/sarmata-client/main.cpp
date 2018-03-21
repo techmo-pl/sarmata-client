@@ -46,25 +46,27 @@ std::map<std::string, std::string> ReadServiceSettingsOption(const std::string &
         settings_lines.push_back(setting_line);
     }
 
-    std::cout << "Passing session settings:" << std::endl;
-    for (const auto & line : settings_lines) {
-        // split by '='
-        std::vector<std::string> key_value;
-        //boost::split(key_value, line, boost::is_any_of("="));
-        std::stringstream key_value_steam(line);
-        std::string field;
-        while (std::getline(key_value_steam, field, '=')) {
-            key_value.push_back(field);
-        }
+    if (not settings_lines.empty()) {
+        std::cout << "Passing session settings:" << std::endl;
+        for (const auto & line : settings_lines) {
+            // split by '='
+            std::vector<std::string> key_value;
+            //boost::split(key_value, line, boost::is_any_of("="));
+            std::stringstream key_value_steam(line);
+            std::string field;
+            while (std::getline(key_value_steam, field, '=')) {
+                key_value.push_back(field);
+            }
 
-        if (key_value.size() == 2) {
-            const auto key = key_value[0];
-            service_settings[key] = key_value[1];
-            std::cout << "key: " << key
-                    << " | value: " << service_settings[key] << std::endl;
-        }
-        else {
-            std::cout << "Skipping invalid session settings line: " << line << std::endl;
+            if (key_value.size() == 2) {
+                const auto key = key_value[0];
+                service_settings[key] = key_value[1];
+                std::cout << "key: " << key
+                        << " | value: " << service_settings[key] << std::endl;
+            }
+            else {
+                std::cout << "Skipping invalid session settings line: " << line << std::endl;
+            }
         }
     }
 
