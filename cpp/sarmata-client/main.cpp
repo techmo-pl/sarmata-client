@@ -136,8 +136,7 @@ int Recognize(const po::variables_map & userOptions, techmo::sarmata::SarmataSes
         return 1;
     }
 
-    config.audio_sample_rate_hz = wave.header.samplesPerSec;
-    const auto responses = sarmata_client.Recognize(config, wave.audioBytes);
+    const auto responses = sarmata_client.Recognize(config, wave.header.samplesPerSec, wave.audioBytes);
 
     for (const auto& response : responses) {
         std::cout << ProtobufMessageToString(response) << std::endl;

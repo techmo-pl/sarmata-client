@@ -28,7 +28,7 @@ public:
 
     DefineGrammarResponse DefineGrammar(const SarmataSessionConfig& config) const;
 
-    std::vector<RecognizeResponse> Recognize(const SarmataSessionConfig& config, const std::string& audio_byte_content) const;
+    std::vector<RecognizeResponse> Recognize(SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const;
 
 private:
     SarmataClient(); // Disable default constructor.

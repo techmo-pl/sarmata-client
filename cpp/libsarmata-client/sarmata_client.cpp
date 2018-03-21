@@ -41,7 +41,7 @@ DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& c
 }
 
 
-std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConfig& config, const std::string& audio_byte_content) const {
+std::vector<RecognizeResponse> SarmataClient::Recognize(SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
     grpc::ClientContext context;
     if (not config.session_id.empty()) {
         context.AddMetadata("session_id", config.session_id);
@@ -51,6 +51,7 @@ std::vector<RecognizeResponse> SarmataClient::Recognize(const SarmataSessionConf
 
     auto stream = stub->Recognize(&context);
 
+    config.audio_sample_rate_hz = audio_sample_rate_hz;
     const auto requests = build_request(config, audio_byte_content);
 
     const auto& config_request = requests.front();
