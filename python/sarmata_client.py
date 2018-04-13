@@ -73,7 +73,7 @@ if __name__ == '__main__':
     parser.add_argument("--grammar", help="SRGS grammar file (ABNF or XML format accepted).")
     parser.add_argument("--wave-path", dest="wave", help="Path to wave file with speech to be recognized. Should be mono, 8kHz or 16kHz.")
     parser.add_argument("--mic", help="Use microphone as an audio source (instead of wave file).", action='store_true')
-
+    parser.add_argument("--service-settings", help="Semicolon-separated list of key=value pairs defining settings to be sent to service via gRPC request.", default='', type=str)
     # Timeouts, settings
     parser.add_argument("--max-alternatives", help="Maximum number of recognition hypotheses to be returned.", default=3, type=int)
     parser.add_argument("--no-match-threshold", help="Confidence acceptance threshold.", default=0.2, type=float)
