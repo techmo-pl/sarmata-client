@@ -11,10 +11,11 @@ class SarmataSettings:
         self.speech_complete_timeout = 500  # ms - MRCP speech complete timeout
         self.speech_incomplete_timeout = 3000# ms - MRCP speech incomplete timeout
         self.no_input_timeout = 5000        # ms - MRCP no input timeout
-        self.recognition_timeout = 10000    # ms - MRCP no recognition
+        self.recognition_timeout = 10000    # ms - MRCP no recognition timeout
         self.session_id = ''
         self.grammar_name = ''
         self.grammar = ''
+        self.service_settings = ''
 
     def process_args(self, args):
         self.max_alternatives = args.max_alternatives
@@ -24,6 +25,7 @@ class SarmataSettings:
         self.no_input_timeout = args.no_input_timeout
         self.recognition_timeout = args.recognition_timeout
         self.grammar_name = args.grammar_name
+        self.service_settings = args.service_settings
 
     def set_session_id(self, session_id):
         """

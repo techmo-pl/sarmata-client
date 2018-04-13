@@ -67,6 +67,7 @@ Usage:
 usage: sarmata_client.py [-h] --service-address ADDRESS [--define-grammar]
                          [--grammar-name GRAMMAR_NAME] [--grammar GRAMMAR]
                          [--wave-path WAVE] [--mic]
+                         [--service-settings SERVICE_SETTINGS]
                          [--max-alternatives MAX_ALTERNATIVES]
                          [--no-match-threshold NO_MATCH_THRESHOLD]
                          [--speech-complete-timeout SPEECH_COMPLETE_TIMEOUT]
@@ -90,6 +91,9 @@ optional arguments:
                         be mono, 8kHz or 16kHz.
   --mic                 Use microphone as an audio source (instead of wave
                         file).
+  --service-settings SERVICE_SETTINGS
+                        Semicolon-separated list of key=value pairs defining
+                        settings to be sent to service via gRPC request.
   --max-alternatives MAX_ALTERNATIVES
                         Maximum number of recognition hypotheses to be
                         returned.
@@ -103,5 +107,4 @@ optional arguments:
                         MRCPv2 No-Input-Timeout in milliseconds.
   --recognition-timeout RECOGNITION_TIMEOUT
                         MRCPv2 Recognition-Timeout in milliseconds.
-
 ```

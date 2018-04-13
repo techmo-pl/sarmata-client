@@ -38,6 +38,15 @@ class RequestIterator:
             )
         )
 
+        # add additional service settings
+        if self.settings.service_settings:
+            settings_pairs = self.settings.service_settings.split(';')
+            for settings_pair in settings_pairs:
+                key_value = settings_pair.split('=')
+                cf = request.config.additional_settings.add()
+                cf.key = key_value[0]
+                cf.value = key_value[1]
+
         if self.settings.grammar_name:
             request.config.grammar_name = self.settings.grammar_name
         elif self.settings.grammar:
