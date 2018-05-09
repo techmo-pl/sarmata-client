@@ -140,6 +140,7 @@ The following parameters are allowed to be set that way:
 | *enable-incomplete-match* | `bool` | true | Enable incomplete match. |
 | *enable-incomplete-match-parse* | `bool` | false | Enable incomplete match. |
 | *garbage-beam* | `int` | 5 | Beam on garbage model. |
+| *max-active* | `unsigned` | max | Decoder max active states. Larger->slower; more accurate. |
 | *show-sil* | `bool` | false | Show silence in recognitions. |
 | *show-garbage* | `bool` | false | Show garbage in recognitions. |
 | *flush-if-no-rec* | `bool` | true | Force recognition on end of stream. |
