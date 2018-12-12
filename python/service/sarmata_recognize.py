@@ -75,11 +75,14 @@ class SarmataRecognizer:
         self.service = SarmataRecognizer.connect(address)
 
     def recognize(self, audio_stream, settings):
+        timeout=None
+        if settings.grpc_timeout > 0:
+            timeout = settings.grpc_timeout / 1000 # milliseconds to seconds
         metadata = []
         if settings.session_id:
             metadata = [('session_id', settings.session_id)]
         requests_iterator = RequestIterator(audio_stream, settings)
-        return self.service.Recognize(requests_iterator, metadata=metadata)
+        return self.service.Recognize(requests_iterator, timeout=timeout, metadata=metadata)
 
     def define_grammar(self, grammar_name, grammar):
         request = sarmata_asr_pb2.DefineGrammarRequest(grammar_name=grammar_name, grammar_data=grammar)

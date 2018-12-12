@@ -66,7 +66,8 @@ Usage:
 ```
 usage: sarmata_client.py [-h] --service-address ADDRESS [--define-grammar]
                          [--grammar-name GRAMMAR_NAME] [--grammar GRAMMAR]
-                         [--wave-path WAVE] [--mic]
+                         [--wave-path WAVE] [--mic] [--session-id SESSION_ID]
+                         [--grpc-timeout GRPC_TIMEOUT]
                          [--service-settings SERVICE_SETTINGS]
                          [--max-alternatives MAX_ALTERNATIVES]
                          [--no-match-threshold NO_MATCH_THRESHOLD]
@@ -91,6 +92,15 @@ optional arguments:
                         be mono, 8kHz or 16kHz.
   --mic                 Use microphone as an audio source (instead of wave
                         file).
+  --session-id SESSION_ID
+                        Session ID to be passed to the service. If not
+                        specified, the service will generate a default session
+                        ID itself.
+  --grpc-timeout GRPC_TIMEOUT
+                        Timeout in milliseconds used to set gRPC deadline -
+                        how long the client is willing to wait for a reply
+                        from the server. If not specified, the service will
+                        set the deadline to a very large number.
   --service-settings SERVICE_SETTINGS
                         Semicolon-separated list of key=value pairs defining
                         settings to be sent to service via gRPC request.

@@ -76,6 +76,7 @@ std::map<std::string, std::string> ReadServiceSettingsOption(const std::string &
 techmo::sarmata::SarmataSessionConfig CreateSarmataSessionConfig(const po::variables_map & userOptions) {
     techmo::sarmata::SarmataSessionConfig config;
     config.session_id = userOptions["session-id"].as<std::string>();
+    config.grpc_timeout = userOptions["grpc-timeout"].as<int>();
     config.service_settings = ReadServiceSettingsOption(userOptions["service-settings"].as<std::string>());
     config.max_alternatives = userOptions["max-alternatives"].as<int>();
 
@@ -160,6 +161,9 @@ po::options_description CreateOptionsDescription(void) {
             ("grammar", po::value<std::string>(), "SRGS grammar file (ABNF or XML format accepted).")
             ("session-id", po::value<std::string>()->default_value(""),
              "Session ID to be passed to the service. If not specified, the service will generate a default session ID itself.")
+            ("grpc-timeout", po::value<int>()->default_value(0), "Timeout in milliseconds used to set gRPC deadline - "
+             "how long the client is willing to wait for a reply from the server. "
+             "If not specified, the service will set the deadline to a very large number.")
             ("service-settings", po::value<std::string>()->default_value(""),
              "Semicolon-separated list of key=value pairs defining settings to be sent to service via gRPC request.")
             ("max-alternatives", po::value<int>()->default_value(1),
@@ -180,17 +184,27 @@ po::options_description CreateOptionsDescription(void) {
 }
 
 int main(int argc, char * argv[]) {
+    po::options_description optionsDescription(CreateOptionsDescription());
+    po::variables_map userOptions;
     try {
-        po::options_description optionsDescription(CreateOptionsDescription());
-        po::variables_map userOptions;
         po::store(po::command_line_parser(argc, argv).options(optionsDescription).run(), userOptions);
+
         std::cout << "Sarmata ASR gRPC client " << LIBSARMATA_CLIENT_VERSION << std::endl;
-        if (userOptions.count("help")) {
+
+        if (userOptions.empty() or userOptions.count("help")) {
             std::cout << optionsDescription;
             return 0;
         }
-        po::notify(userOptions);
 
+        po::notify(userOptions);
+    }
+    catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        std::cout << optionsDescription;
+        return 1;
+    }
+
+    try {
         techmo::sarmata::SarmataSessionConfig config = CreateSarmataSessionConfig(userOptions);
         techmo::sarmata::SarmataClient sarmata_client{ userOptions["service-address"].as<std::string>() };
 
