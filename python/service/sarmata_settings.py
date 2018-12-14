@@ -13,6 +13,7 @@ class SarmataSettings:
         self.no_input_timeout = 5000        # ms - MRCP no input timeout
         self.recognition_timeout = 10000    # ms - MRCP no recognition timeout
         self.session_id = ''
+        self.grpc_timeout = 0
         self.grammar_name = ''
         self.grammar = ''
         self.service_settings = ''
@@ -24,16 +25,10 @@ class SarmataSettings:
         self.speech_incomplete_timeout = args.speech_incomplete_timeout
         self.no_input_timeout = args.no_input_timeout
         self.recognition_timeout = args.recognition_timeout
+        self.session_id = args.session_id
+        self.grpc_timeout = args.grpc_timeout
         self.grammar_name = args.grammar_name
         self.service_settings = args.service_settings
-
-    def set_session_id(self, session_id):
-        """
-        Session ID is used for better log processing
-        :param session_id: string identifier
-        :return:
-        """
-        self.session_id = session_id
 
     def load_grammar(self, grammar_path):
         """

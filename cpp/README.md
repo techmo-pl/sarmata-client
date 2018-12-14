@@ -60,6 +60,11 @@ Options:
   --session-id arg                Session ID to be passed to the service. If 
                                   not specified, the service will generate a 
                                   default session ID itself.
+  --grpc-timeout arg (=0)         Timeout in milliseconds used to set gRPC 
+                                  deadline - how long the client is willing to 
+                                  wait for a reply from the server. If not 
+                                  specified, the service will set the deadline 
+                                  to a very large number.
   --service-settings arg          Semicolon-separated list of key=value pairs 
                                   defining settings to be sent to service via 
                                   gRPC request.
@@ -73,6 +78,6 @@ Options:
   --speech-incomplete-timeout arg MRCPv2 Speech-Incomplete-Timeout in 
                                   milliseconds.
   --define-grammar                If present, will perform DefineGrammar call 
-                                  for given --grammar-name and --grammar 
-                                  (will not call Recognize).
+                                  for given --grammar-name and --grammar (will 
+                                  not call Recognize).
 ```

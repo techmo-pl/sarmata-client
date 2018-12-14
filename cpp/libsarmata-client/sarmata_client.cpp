@@ -11,17 +11,13 @@
 namespace techmo { namespace sarmata {
 
 // Forward declarations
+void prepare_context(grpc::ClientContext& context, const SarmataSessionConfig& config);
 std::vector<RecognizeRequest> build_request(const SarmataSessionConfig& config, const std::string& audio_byte_content);
 bool error_response(const RecognizeResponse& response);
 std::string grpc_status_to_string(const grpc::Status& status);
 
 
 DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& config) const {
-    grpc::ClientContext context;
-    if (not config.session_id.empty()) {
-        context.AddMetadata("session_id", config.session_id);
-    }
-
     auto stub = ASR::NewStub(grpc::CreateChannel(service_address_, grpc::InsecureChannelCredentials()));
 
     DefineGrammarRequest request;
@@ -29,6 +25,9 @@ DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& c
     request.set_grammar_data(config.grammar_data);
 
     DefineGrammarResponse response;
+
+    grpc::ClientContext context;
+    prepare_context(context, config);
 
     const grpc::Status status = stub->DefineGrammar(&context, request, &response);
 
@@ -42,12 +41,10 @@ DefineGrammarResponse SarmataClient::DefineGrammar(const SarmataSessionConfig& c
 
 
 std::vector<RecognizeResponse> SarmataClient::Recognize(SarmataSessionConfig& config, unsigned int audio_sample_rate_hz, const std::string& audio_byte_content) const {
-    grpc::ClientContext context;
-    if (not config.session_id.empty()) {
-        context.AddMetadata("session_id", config.session_id);
-    }
-
     auto stub = ASR::NewStub(grpc::CreateChannel(service_address_, grpc::InsecureChannelCredentials()));
+
+    grpc::ClientContext context;
+    prepare_context(context, config);
 
     auto stream = stub->Recognize(&context);
 
@@ -105,6 +102,15 @@ std::vector<RecognizeResponse> SarmataClient::Recognize(SarmataSessionConfig& co
     return responses;
 }
 
+
+void prepare_context(grpc::ClientContext& context, const SarmataSessionConfig& config) {
+    if (not config.session_id.empty()) {
+        context.AddMetadata("session_id", config.session_id);
+    }
+    if (config.grpc_timeout > 0) {
+        context.set_deadline(std::chrono::system_clock::now() + std::chrono::milliseconds{ config.grpc_timeout });
+    }
+}
 
 void fill_additional_settings(const SarmataSessionConfig& config, RecognitionConfig& recognition_config) {
     for (const auto& entry : config.service_settings) {

@@ -73,6 +73,8 @@ if __name__ == '__main__':
     parser.add_argument("--grammar", help="SRGS grammar file (ABNF or XML format accepted).")
     parser.add_argument("--wave-path", dest="wave", help="Path to wave file with speech to be recognized. Should be mono, 8kHz or 16kHz.")
     parser.add_argument("--mic", help="Use microphone as an audio source (instead of wave file).", action='store_true')
+    parser.add_argument("--session-id", help="Session ID to be passed to the service. If not specified, the service will generate a default session ID itself.", default='', type=str)
+    parser.add_argument("--grpc-timeout", help="Timeout in milliseconds used to set gRPC deadline - how long the client is willing to wait for a reply from the server. If not specified, the service will set the deadline to a very large number.", default=0, type=int)
     parser.add_argument("--service-settings", help="Semicolon-separated list of key=value pairs defining settings to be sent to service via gRPC request.", default='', type=str)
     # Timeouts, settings
     parser.add_argument("--max-alternatives", help="Maximum number of recognition hypotheses to be returned.", default=3, type=int)
@@ -116,9 +118,5 @@ if __name__ == '__main__':
         validate_recognition_settings(settings)
 
         with create_audio_stream(args) as stream:
-            # generate id
-            session_id = stream.session_id()
-            settings.set_session_id(session_id)
-
             results = recognizer.recognize(stream, settings)
             print_results(results, stream)
