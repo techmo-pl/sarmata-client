@@ -1,4 +1,4 @@
-Techmo Sarmata ASR - python client.
+Techmo Grammar ASR - python client.
 
 Stream audio from wave or microphone to the ASR engine and prints all reponses:
  - status, 
