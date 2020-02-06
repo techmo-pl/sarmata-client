@@ -8,15 +8,15 @@ Stream audio from wave or microphone to the ASR engine and prints all reponses:
 (when applicable).
 
 Dependencies (listed in requirements.txt):
- - grpcio
- - grpcio-tools
- - protobuf
- - pydub
- - pyaudio
+ - grpcio==1.24.3
+ - grpcio-tools==1.24.3
+ - protobuf==3.8.0
+ - pydub==0.23.1
+ - pyaudio==0.2.11
 
 `pyaudio` requires development packages of Python and PortAudio:
 ```
-sudo apt-get install python3.5-dev portaudio19-dev
+sudo apt-get install python3.6-dev portaudio19-dev
 ```
 
 To regenerate sources from `.proto`, run (virtualenv must be enabled before):
@@ -26,9 +26,9 @@ To regenerate sources from `.proto`, run (virtualenv must be enabled before):
 This might be required when using other gRPC or Protocol Buffers version.
 
 To run:
- - Use python 3.5 with virtual environment and install required packages.
+ - Use python 3.6 with virtual environment and install required packages.
 ```
-virtualenv -p python3.5 venv
+virtualenv -p python3.6 venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
